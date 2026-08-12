@@ -15,7 +15,7 @@ export const Footer = () => {
   return (
     <footer className="bg-white dark:bg-slate-900 border-t border-gray-200 dark:border-slate-800 transition-colors duration-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
 
           {/* Brand Col */}
           <div className="lg:col-span-2 space-y-4">
@@ -129,38 +129,7 @@ export const Footer = () => {
             </ul>
           </div>
 
-          {/* Support & Legal */}
-          <div className="space-y-3">
-            <h4 className="text-xs font-bold uppercase tracking-wider text-gray-900 dark:text-white">
-              Safety & Terms
-            </h4>
-
-            <ul className="space-y-2 text-sm text-gray-600 dark:text-gray-400">
-              <li>
-                <span className="cursor-default">
-                  About CampusMart
-                </span>
-              </li>
-
-              <li>
-                <span className="cursor-default">
-                  Campus Helpdesk
-                </span>
-              </li>
-
-              <li>
-                <span className="cursor-default">
-                  Privacy Policy
-                </span>
-              </li>
-
-              <li>
-                <span className="cursor-default">
-                  Hostel Trade Guidelines
-                </span>
-              </li>
-            </ul>
-          </div>
+        
 
         </div>
 
