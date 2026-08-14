@@ -1,6 +1,6 @@
-# CampusMart 🛒
+# BitMart 🛒
 
-CampusMart is a MERN-based college marketplace built for students of BIT Mesra.
+BitMart is a MERN-based college marketplace built for students of BIT Mesra.
 
 It allows students to buy and sell used items such as books, cycles, electronics, furniture and other college essentials.
 
@@ -27,6 +27,7 @@ It allows students to buy and sell used items such as books, cycles, electronics
 ## 🛠️ Tech Stack
 
 ### Frontend
+
 - React
 - Vite
 - Tailwind CSS
@@ -34,6 +35,7 @@ It allows students to buy and sell used items such as books, cycles, electronics
 - Context API
 
 ### Backend
+
 - Node.js
 - Express.js
 - MongoDB
@@ -47,7 +49,7 @@ It allows students to buy and sell used items such as books, cycles, electronics
 ## 📁 Project Structure
 
 ```text
-CampusMart/
+BitMart/
 │
 ├── src/
 │   ├── components/
@@ -84,7 +86,7 @@ Wishlist
 Image uploads
 🎯 Purpose
 
-CampusMart is designed specifically as a student-focused marketplace where students can easily buy and sell second-hand items within their college community.
+BitMart is designed specifically as a student-focused marketplace where students can easily buy and sell second-hand items within their college community.
 
 👨‍💻 Developer
 
@@ -95,3 +97,4 @@ Built with ❤️ using the MERN stack.
 📄 License
 
 This project is for educational and personal use.
+```

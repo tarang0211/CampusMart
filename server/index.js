@@ -21,7 +21,7 @@ app.use("/api/wishlist", wishlistRoutes);
 // Test
 app.get("/", (req, res) => {
   res.json({
-    message: "CampusMart API is running 🚀",
+    message: "BitMart API is running 🚀",
   });
 });
 

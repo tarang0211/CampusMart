@@ -1,30 +1,19 @@
-import React, {
-  createContext,
-  useContext,
-  useState
-} from 'react';
+import React, { createContext, useContext, useState } from "react";
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-
   // =========================
   // USER
   // =========================
 
   const [user, setUser] = useState(() => {
     try {
-      const saved =
-        localStorage.getItem('campusmart_user');
+      const saved = localStorage.getItem("BitMart_user");
 
-      return saved
-        ? JSON.parse(saved)
-        : null;
+      return saved ? JSON.parse(saved) : null;
     } catch (error) {
-      console.error(
-        'Error loading saved user:',
-        error
-      );
+      console.error("Error loading saved user:", error);
 
       return null;
     }
@@ -35,11 +24,7 @@ export const AuthProvider = ({ children }) => {
   // =========================
 
   const [token, setToken] = useState(() => {
-    return (
-      localStorage.getItem(
-        'campusmart_token'
-      ) || null
-    );
+    return localStorage.getItem("BitMart_token") || null;
   });
 
   // =========================
@@ -56,15 +41,9 @@ export const AuthProvider = ({ children }) => {
     setUser(userData);
     setToken(jwtToken);
 
-    localStorage.setItem(
-      'campusmart_user',
-      JSON.stringify(userData)
-    );
+    localStorage.setItem("BitMart_user", JSON.stringify(userData));
 
-    localStorage.setItem(
-      'campusmart_token',
-      jwtToken
-    );
+    localStorage.setItem("BitMart_token", jwtToken);
   };
 
   // =========================
@@ -74,10 +53,7 @@ export const AuthProvider = ({ children }) => {
   // User must verify email first.
 
   const register = (userData) => {
-    console.log(
-      'Registration successful:',
-      userData
-    );
+    console.log("Registration successful:", userData);
   };
 
   // =========================
@@ -88,13 +64,9 @@ export const AuthProvider = ({ children }) => {
     setUser(null);
     setToken(null);
 
-    localStorage.removeItem(
-      'campusmart_user'
-    );
+    localStorage.removeItem("BitMart_user");
 
-    localStorage.removeItem(
-      'campusmart_token'
-    );
+    localStorage.removeItem("BitMart_token");
   };
 
   // =========================
@@ -103,20 +75,16 @@ export const AuthProvider = ({ children }) => {
 
   const updateProfile = (updatedFields) => {
     setUser((prev) => {
-
       if (!prev) {
         return prev;
       }
 
       const next = {
         ...prev,
-        ...updatedFields
+        ...updatedFields,
       };
 
-      localStorage.setItem(
-        'campusmart_user',
-        JSON.stringify(next)
-      );
+      localStorage.setItem("BitMart_user", JSON.stringify(next));
 
       return next;
     });
@@ -136,7 +104,7 @@ export const AuthProvider = ({ children }) => {
         login,
         register,
         logout,
-        updateProfile
+        updateProfile,
       }}
     >
       {children}
@@ -144,10 +112,8 @@ export const AuthProvider = ({ children }) => {
   );
 };
 
-
 // =========================
 // CUSTOM HOOK
 // =========================
 
-export const useAuth = () =>
-  useContext(AuthContext);
+export const useAuth = () => useContext(AuthContext);

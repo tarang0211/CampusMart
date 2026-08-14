@@ -1,15 +1,10 @@
-import React, {
-  createContext,
-  useContext,
-  useState,
-  useEffect
-} from 'react';
+import React, { createContext, useContext, useState, useEffect } from "react";
 
-import { useAuth } from './AuthContext';
+import { useAuth } from "./AuthContext";
 
 const WishlistContext = createContext();
 
-const API_URL = 'http://localhost:5000/api/wishlist';
+const API_URL = "http://localhost:5000/api/wishlist";
 
 export const WishlistProvider = ({ children }) => {
   const { isLoggedIn } = useAuth();
@@ -23,8 +18,7 @@ export const WishlistProvider = ({ children }) => {
 
   const fetchWishlist = async () => {
     try {
-      const token =
-        localStorage.getItem('campusmart_token');
+      const token = localStorage.getItem("BitMart_token");
 
       if (!token) {
         setWishlist([]);
@@ -34,33 +28,25 @@ export const WishlistProvider = ({ children }) => {
       setLoading(true);
 
       const response = await fetch(API_URL, {
-        method: 'GET',
+        method: "GET",
         headers: {
-          Authorization: `Bearer ${token}`
-        }
+          Authorization: `Bearer ${token}`,
+        },
       });
 
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(
-          data.message || 'Failed to fetch wishlist'
-        );
+        throw new Error(data.message || "Failed to fetch wishlist");
       }
 
-      const wishlistIds = (data.wishlist || []).map(
-        (item) =>
-          typeof item === 'string'
-            ? item
-            : item._id
+      const wishlistIds = (data.wishlist || []).map((item) =>
+        typeof item === "string" ? item : item._id,
       );
 
       setWishlist(wishlistIds);
     } catch (error) {
-      console.error(
-        'Error fetching wishlist:',
-        error
-      );
+      console.error("Error fetching wishlist:", error);
 
       setWishlist([]);
     } finally {
@@ -86,56 +72,35 @@ export const WishlistProvider = ({ children }) => {
 
   const toggleWishlist = async (productId) => {
     try {
-      const token =
-        localStorage.getItem('campusmart_token');
+      const token = localStorage.getItem("BitMart_token");
 
       if (!token) {
-        throw new Error(
-          'Please login to use Wishlist'
-        );
+        throw new Error("Please login to use Wishlist");
       }
 
-      const alreadyWishlisted =
-        wishlist.includes(productId);
+      const alreadyWishlisted = wishlist.includes(productId);
 
-      const response = await fetch(
-        `${API_URL}/${productId}`,
-        {
-          method: alreadyWishlisted
-            ? 'DELETE'
-            : 'POST',
+      const response = await fetch(`${API_URL}/${productId}`, {
+        method: alreadyWishlisted ? "DELETE" : "POST",
 
-          headers: {
-            Authorization:
-              `Bearer ${token}`
-          }
-        }
-      );
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(
-          data.message ||
-            'Failed to update wishlist'
-        );
+        throw new Error(data.message || "Failed to update wishlist");
       }
 
-      const updatedWishlist =
-        (data.wishlist || []).map(
-          (item) =>
-            typeof item === 'string'
-              ? item
-              : item._id
-        );
+      const updatedWishlist = (data.wishlist || []).map((item) =>
+        typeof item === "string" ? item : item._id,
+      );
 
       setWishlist(updatedWishlist);
-
     } catch (error) {
-      console.error(
-        'Error updating wishlist:',
-        error
-      );
+      console.error("Error updating wishlist:", error);
     }
   };
 
@@ -153,8 +118,7 @@ export const WishlistProvider = ({ children }) => {
 
   const clearWishlist = async () => {
     try {
-      const token =
-        localStorage.getItem('campusmart_token');
+      const token = localStorage.getItem("BitMart_token");
 
       if (!token) {
         return;
@@ -163,25 +127,18 @@ export const WishlistProvider = ({ children }) => {
       const currentWishlist = [...wishlist];
 
       for (const productId of currentWishlist) {
-        await fetch(
-          `${API_URL}/${productId}`,
-          {
-            method: 'DELETE',
+        await fetch(`${API_URL}/${productId}`, {
+          method: "DELETE",
 
-            headers: {
-              Authorization:
-                `Bearer ${token}`
-            }
-          }
-        );
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
       }
 
       setWishlist([]);
     } catch (error) {
-      console.error(
-        'Error clearing wishlist:',
-        error
-      );
+      console.error("Error clearing wishlist:", error);
     }
   };
 
@@ -193,7 +150,7 @@ export const WishlistProvider = ({ children }) => {
         toggleWishlist,
         isWishlisted,
         clearWishlist,
-        fetchWishlist
+        fetchWishlist,
       }}
     >
       {children}
@@ -205,5 +162,4 @@ export const WishlistProvider = ({ children }) => {
 // CUSTOM HOOK
 // =========================
 
-export const useWishlist = () =>
-  useContext(WishlistContext);
+export const useWishlist = () => useContext(WishlistContext);

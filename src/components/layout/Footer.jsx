@@ -1,22 +1,21 @@
-import React from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { Building2, ShieldCheck, Heart } from 'lucide-react';
-import { useProducts } from '../../context/ProductContext';
+import React from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { Building2, ShieldCheck, Heart } from "lucide-react";
+import { useProducts } from "../../context/ProductContext";
 
 export const Footer = () => {
   const navigate = useNavigate();
   const { setSelectedCategory } = useProducts();
 
   const handleCategoryClick = (category) => {
-  setSelectedCategory(category);
-  navigate('/');
-};
+    setSelectedCategory(category);
+    navigate("/");
+  };
 
   return (
     <footer className="bg-white dark:bg-slate-900 border-t border-gray-200 dark:border-slate-800 transition-colors duration-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-
           {/* Brand Col */}
           <div className="lg:col-span-2 space-y-4">
             <div className="flex items-center gap-2.5">
@@ -25,12 +24,15 @@ export const Footer = () => {
               </div>
 
               <span className="font-extrabold text-xl tracking-tight text-gray-900 dark:text-white">
-                Campus<span className="text-blue-600 dark:text-blue-400">Mart</span>
+                BIT
+                <span className="text-blue-600 dark:text-blue-400">Mart</span>
               </span>
             </div>
 
             <p className="text-sm text-gray-600 dark:text-gray-400 max-w-sm leading-relaxed">
-              CampusMart is an exclusive peer-to-peer marketplace designed specifically for college students to buy, sell, and trade books, electronics, hostel essentials, and cycles safely inside campus.
+              BitMart is an exclusive peer-to-peer marketplace designed
+              specifically for college students to buy, sell, and trade books,
+              electronics, hostel essentials, and cycles safely inside campus.
             </p>
 
             <div className="flex items-center gap-2 text-xs font-semibold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/50 px-3 py-1.5 rounded-lg w-fit border border-emerald-200 dark:border-emerald-900">
@@ -93,7 +95,7 @@ export const Footer = () => {
             <ul className="space-y-2 text-sm text-gray-600 dark:text-gray-400">
               <li>
                 <button
-                  onClick={() => handleCategoryClick('Books')}
+                  onClick={() => handleCategoryClick("Books")}
                   className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
                 >
                   Engineering Textbooks
@@ -102,7 +104,7 @@ export const Footer = () => {
 
               <li>
                 <button
-                  onClick={() => handleCategoryClick('Electronics')}
+                  onClick={() => handleCategoryClick("Electronics")}
                   className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
                 >
                   Calculators & Gadgets
@@ -111,7 +113,7 @@ export const Footer = () => {
 
               <li>
                 <button
-                  onClick={() => handleCategoryClick('Cycles')}
+                  onClick={() => handleCategoryClick("Cycles")}
                   className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
                 >
                   Campus Bicycles
@@ -120,7 +122,7 @@ export const Footer = () => {
 
               <li>
                 <button
-                  onClick={() => handleCategoryClick('Hostel Essentials')}
+                  onClick={() => handleCategoryClick("Hostel Essentials")}
                   className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
                 >
                   Hostel Kettles & Lamps
@@ -128,14 +130,11 @@ export const Footer = () => {
               </li>
             </ul>
           </div>
-
-        
-
         </div>
 
         {/* Bottom Bar */}
         <div className="mt-12 pt-8 border-t border-gray-200 dark:border-slate-800 flex flex-col sm:flex-row items-center justify-between text-xs text-gray-500 dark:text-gray-400 gap-4">
-          <p>© {new Date().getFullYear()} CampusMart. All rights reserved.</p>
+          <p>© {new Date().getFullYear()} BitMart. All rights reserved.</p>
 
           <div className="flex items-center gap-1.5 font-medium text-gray-700 dark:text-gray-300">
             <span>Made with</span>
@@ -143,7 +142,6 @@ export const Footer = () => {
             <span>for College Students</span>
           </div>
         </div>
-
       </div>
     </footer>
   );

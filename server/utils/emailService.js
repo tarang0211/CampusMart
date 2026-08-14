@@ -10,18 +10,17 @@ const transporter = nodemailer.createTransport({
 
 const sendVerificationEmail = async (email, name, token) => {
   try {
-    const verificationLink =
-      `${process.env.CLIENT_URL}/verify-email?token=${token}`;
+    const verificationLink = `${process.env.CLIENT_URL}/verify-email?token=${token}`;
 
     const info = await transporter.sendMail({
-      from: `"CampusMart" <${process.env.EMAIL_USER}>`,
+      from: `"BitMart" <${process.env.EMAIL_USER}>`,
       to: email,
-      subject: "Verify your CampusMart account",
+      subject: "Verify your BitMart account",
 
       html: `
         <div style="font-family: Arial, sans-serif; padding: 20px;">
           
-          <h2>Welcome to CampusMart, ${name}! 🎉</h2>
+          <h2>Welcome to BitMart, ${name}! 🎉</h2>
 
           <p>
             Thanks for registering. Please verify your email address
@@ -56,7 +55,6 @@ const sendVerificationEmail = async (email, name, token) => {
     console.log("📨 Message ID:", info.messageId);
 
     return info;
-
   } catch (error) {
     console.error("❌ Email sending failed:");
     console.error(error);

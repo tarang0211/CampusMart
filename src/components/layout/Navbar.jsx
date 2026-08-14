@@ -55,7 +55,7 @@ export const Navbar = () => {
             <div className="flex flex-col">
               <div className="flex items-center gap-1">
                 <span className="font-extrabold text-xl tracking-tight text-gray-900 dark:text-white">
-                  Campus<span className="text-blue-600 dark:text-blue-400">Mart</span>
+                  BIT<span className="text-blue-600 dark:text-blue-400">Mart</span>
                 </span>
                 <span className="bg-blue-100 text-blue-700 dark:bg-blue-900/50 dark:text-blue-300 text-[10px] font-bold px-1.5 py-0.5 rounded-full uppercase tracking-wider hidden sm:inline-block">
                   Campus Only

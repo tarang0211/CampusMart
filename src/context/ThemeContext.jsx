@@ -1,29 +1,29 @@
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import React, { createContext, useContext, useEffect, useState } from "react";
 
 const ThemeContext = createContext();
 
 export const ThemeProvider = ({ children }) => {
   const [darkMode, setDarkMode] = useState(() => {
-    const saved = localStorage.getItem('campusmart_theme');
+    const saved = localStorage.getItem("BitMart_theme");
     if (saved !== null) {
-      return saved === 'dark';
+      return saved === "dark";
     }
-    return window.matchMedia('(prefers-color-scheme: dark)').matches;
+    return window.matchMedia("(prefers-color-scheme: dark)").matches;
   });
 
   useEffect(() => {
     const root = document.documentElement;
     if (darkMode) {
-      root.classList.add('dark');
-      localStorage.setItem('campusmart_theme', 'dark');
+      root.classList.add("dark");
+      localStorage.setItem("BitMart_theme", "dark");
     } else {
-      root.classList.remove('dark');
-      localStorage.setItem('campusmart_theme', 'light');
+      root.classList.remove("dark");
+      localStorage.setItem("BitMart_theme", "light");
     }
   }, [darkMode]);
 
   const toggleDarkMode = () => {
-    setDarkMode(prev => !prev);
+    setDarkMode((prev) => !prev);
   };
 
   return (
