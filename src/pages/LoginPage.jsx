@@ -166,7 +166,7 @@ export const LoginPage = () => {
                 <Input
                   label="Email Address"
                   type="email"
-                  placeholder="gmail@bitmesra.ac.in"
+                  placeholder="Enter Your Email"
                   icon={Mail}
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}

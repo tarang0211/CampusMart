@@ -224,10 +224,10 @@ export const HomePage = () => {
 
               <div className="flex items-center gap-1.5">
 
-                <ShieldCheck className="w-4 h-4 text-emerald-400" />
+                
 
                 <span>
-                  Verified .edu Emails Only
+                  
                 </span>
 
               </div>
@@ -235,10 +235,10 @@ export const HomePage = () => {
 
               <div className="flex items-center gap-1.5">
 
-                <Zap className="w-4 h-4 text-amber-300" />
+                
 
                 <span>
-                  Instant Hostel Pickup
+                  
                 </span>
 
               </div>

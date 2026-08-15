@@ -39,9 +39,21 @@ export const RegisterPage = () => {
   const handleInputChange = (e) => {
     const { name, value } = e.target;
 
+    let updatedValue = value;
+
+    // Name: allow only alphabets and spaces
+    if (name === "name") {
+      updatedValue = value.replace(/[^a-zA-Z\s]/g, "");
+    }
+
+    // Phone: allow only numbers and maximum 10 digits
+    if (name === "phone") {
+      updatedValue = value.replace(/\D/g, "").slice(0, 10);
+    }
+
     setFormData((prev) => ({
       ...prev,
-      [name]: value,
+      [name]: updatedValue,
     }));
 
     if (errors[name]) {
@@ -61,28 +73,42 @@ export const RegisterPage = () => {
 
     const newErrors = {};
 
+    const trimmedName = formData.name.trim();
+    const trimmedEmail = formData.email.trim().toLowerCase();
+    const trimmedPhone = formData.phone.trim();
+
     // Name
-    if (!formData.name.trim()) {
+    if (!trimmedName) {
       newErrors.name = "Full name is required";
+    } else if (!/^[a-zA-Z]+(?:\s[a-zA-Z]+)*$/.test(trimmedName)) {
+      newErrors.name = "Name can contain only alphabets and spaces";
     }
 
     // Email
-    if (!formData.email.trim() || !formData.email.includes("@")) {
-      newErrors.email = "Valid college email is required";
+    if (!trimmedEmail) {
+      newErrors.email = "Email is required";
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmedEmail)) {
+      newErrors.email = "Please enter a valid email address";
     }
 
     // Phone
-    if (!formData.phone.trim()) {
+    if (!trimmedPhone) {
       newErrors.phone = "Phone number is required";
+    } else if (!/^\d{10}$/.test(trimmedPhone)) {
+      newErrors.phone = "Phone number must be exactly 10 digits";
     }
 
     // Password
-    if (formData.password.length < 6) {
+    if (!formData.password) {
+      newErrors.password = "Password is required";
+    } else if (formData.password.length < 6) {
       newErrors.password = "Password must be at least 6 characters";
     }
 
     // Confirm password
-    if (formData.password !== formData.confirmPassword) {
+    if (!formData.confirmPassword) {
+      newErrors.confirmPassword = "Please confirm your password";
+    } else if (formData.password !== formData.confirmPassword) {
       newErrors.confirmPassword = "Passwords do not match";
     }
 
@@ -98,21 +124,24 @@ export const RegisterPage = () => {
     try {
       setLoading(true);
 
-      const response = await fetch("http://localhost:5000/api/auth/register", {
-        method: "POST",
+      const response = await fetch(
+        "http://localhost:5000/api/auth/register",
+        {
+          method: "POST",
 
-        headers: {
-          "Content-Type": "application/json",
-        },
+          headers: {
+            "Content-Type": "application/json",
+          },
 
-        body: JSON.stringify({
-          name: formData.name.trim(),
-          email: formData.email.trim().toLowerCase(),
-          password: formData.password,
-          hostel: formData.hostel,
-          phone: formData.phone.trim(),
-        }),
-      });
+          body: JSON.stringify({
+            name: trimmedName,
+            email: trimmedEmail,
+            password: formData.password,
+            hostel: formData.hostel,
+            phone: trimmedPhone,
+          }),
+        }
+      );
 
       const data = await response.json();
 
@@ -125,7 +154,7 @@ export const RegisterPage = () => {
 
       showToast(
         "Registration successful! Check your email to verify your account.",
-        "success",
+        "success"
       );
     } catch (error) {
       console.error("Registration error:", error);
@@ -144,22 +173,18 @@ export const RegisterPage = () => {
     return (
       <div className="w-full max-w-2xl mx-auto bg-white dark:bg-slate-900 rounded-3xl shadow-xl p-8 sm:p-12">
         <div className="text-center">
-          {/* Success Icon */}
           <div className="w-16 h-16 rounded-full bg-green-100 dark:bg-green-950/40 flex items-center justify-center mx-auto mb-6">
             <CheckCircle className="w-9 h-9 text-green-600" />
           </div>
 
-          {/* Heading */}
           <h2 className="text-2xl sm:text-3xl font-extrabold text-gray-900 dark:text-white mb-3">
             Registration Successful! 🎉
           </h2>
 
-          {/* Message */}
           <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400 mb-6">
             Your account has been created successfully.
           </p>
 
-          {/* Verification Notice */}
           <div className="p-5 bg-blue-50 dark:bg-blue-950/40 rounded-2xl border border-blue-200 dark:border-blue-900 text-left mb-6">
             <div className="flex items-start gap-3">
               <Mail className="w-6 h-6 text-blue-600 shrink-0 mt-0.5" />
@@ -189,7 +214,6 @@ export const RegisterPage = () => {
             </div>
           </div>
 
-          {/* Login Button */}
           <Link
             to="/login"
             className="inline-block w-full sm:w-auto px-8 py-3 rounded-xl bg-blue-600 text-white font-bold hover:bg-blue-700 transition"
@@ -207,7 +231,6 @@ export const RegisterPage = () => {
 
   return (
     <div className="w-full max-w-4xl mx-auto bg-white dark:bg-slate-900 rounded-3xl shadow-xl p-8 sm:p-12">
-      {/* Header */}
       <div className="text-center space-y-2 mb-8">
         <div className="w-12 h-12 rounded-2xl bg-blue-600 text-white flex items-center justify-center mx-auto shadow-md shadow-blue-500/30">
           <UserPlus className="w-6 h-6" />
@@ -222,9 +245,7 @@ export const RegisterPage = () => {
         </p>
       </div>
 
-      {/* Form */}
       <form onSubmit={handleRegisterSubmit} className="space-y-5">
-        {/* Name + Email */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <Input
             label="Full Name"
@@ -241,7 +262,7 @@ export const RegisterPage = () => {
             label="College Email"
             name="email"
             type="email"
-            placeholder="student@college.edu"
+            placeholder="Enter Your Email"
             icon={Mail}
             value={formData.email}
             onChange={handleInputChange}
@@ -250,9 +271,7 @@ export const RegisterPage = () => {
           />
         </div>
 
-        {/* Hostel + Phone */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          {/* Hostel */}
           <div className="flex flex-col space-y-1.5">
             <label className="text-xs font-semibold uppercase tracking-wider text-gray-700 dark:text-gray-300">
               Hostel / Residence <span className="text-rose-500">*</span>
@@ -272,11 +291,13 @@ export const RegisterPage = () => {
             </select>
           </div>
 
-          {/* Phone */}
           <Input
             label="Phone Number (WhatsApp)"
             name="phone"
-            placeholder="+91 98765 43210"
+            type="tel"
+            inputMode="numeric"
+            maxLength={10}
+            placeholder="9876543210"
             icon={Phone}
             value={formData.phone}
             onChange={handleInputChange}
@@ -285,7 +306,6 @@ export const RegisterPage = () => {
           />
         </div>
 
-        {/* Password + Confirm Password */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <Input
             label="Password"
@@ -312,7 +332,6 @@ export const RegisterPage = () => {
           />
         </div>
 
-        {/* Security Info */}
         <div className="p-3 bg-blue-50 dark:bg-blue-950/40 rounded-xl border border-blue-200 dark:border-blue-900 text-xs text-blue-900 dark:text-blue-300 flex items-center gap-2">
           <ShieldCheck className="w-4 h-4 text-blue-600 shrink-0" />
 
@@ -322,7 +341,6 @@ export const RegisterPage = () => {
           </span>
         </div>
 
-        {/* Email Verification Info */}
         <div className="p-3 bg-amber-50 dark:bg-amber-950/30 rounded-xl border border-amber-200 dark:border-amber-900 text-xs text-amber-900 dark:text-amber-300 flex items-center gap-2">
           <Mail className="w-4 h-4 text-amber-600 shrink-0" />
 
@@ -332,7 +350,6 @@ export const RegisterPage = () => {
           </span>
         </div>
 
-        {/* Submit */}
         <Button
           type="submit"
           variant="primary"
@@ -346,7 +363,6 @@ export const RegisterPage = () => {
         </Button>
       </form>
 
-      {/* Login Link */}
       <div className="pt-6 text-center text-xs text-gray-500 dark:text-gray-400">
         Already have an account?{" "}
         <Link
