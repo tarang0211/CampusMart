@@ -10,7 +10,8 @@ const transporter = nodemailer.createTransport({
 
 const sendVerificationEmail = async (email, name, token) => {
   try {
-    const verificationLink = `${process.env.CLIENT_URL}/verify-email?token=${token}`;
+    const verificationLink =
+      `${process.env.CLIENT_URL}/verify-email?token=${token}`;
 
     const info = await transporter.sendMail({
       from: `"BitMart" <${process.env.EMAIL_USER}>`,
@@ -18,20 +19,33 @@ const sendVerificationEmail = async (email, name, token) => {
       subject: "Verify your BitMart account",
 
       html: `
-        <div style="font-family: Arial, sans-serif; padding: 20px;">
-          
-          <h2>Welcome to BitMart, ${name}! 🎉</h2>
+        <div style="
+          font-family: Arial, sans-serif;
+          max-width: 600px;
+          margin: auto;
+          padding: 30px;
+          background: #f8fafc;
+          border-radius: 12px;
+        ">
 
-          <p>
-            Thanks for registering. Please verify your email address
-            to activate your account.
+          <h2 style="color: #2563eb;">
+            Welcome to BitMart, ${name}! 🎉
+          </h2>
+
+          <p style="color: #374151; font-size: 15px;">
+            Thanks for registering with BitMart.
+          </p>
+
+          <p style="color: #374151; font-size: 15px;">
+            Please verify your email address by clicking the button below.
           </p>
 
           <a
             href="${verificationLink}"
             style="
               display: inline-block;
-              padding: 12px 20px;
+              margin-top: 15px;
+              padding: 12px 22px;
               background: #2563eb;
               color: white;
               text-decoration: none;
@@ -42,8 +56,20 @@ const sendVerificationEmail = async (email, name, token) => {
             Verify Email
           </a>
 
-          <p style="margin-top: 20px;">
+          <p style="
+            margin-top: 25px;
+            color: #6b7280;
+            font-size: 13px;
+          ">
             This verification link will expire in 24 hours.
+          </p>
+
+          <p style="
+            margin-top: 20px;
+            color: #9ca3af;
+            font-size: 12px;
+          ">
+            If you didn't create a BitMart account, you can safely ignore this email.
           </p>
 
         </div>
@@ -55,6 +81,7 @@ const sendVerificationEmail = async (email, name, token) => {
     console.log("📨 Message ID:", info.messageId);
 
     return info;
+
   } catch (error) {
     console.error("❌ Email sending failed:");
     console.error(error);
@@ -63,4 +90,6 @@ const sendVerificationEmail = async (email, name, token) => {
   }
 };
 
-module.exports = { sendVerificationEmail };
+module.exports = {
+  sendVerificationEmail,
+};

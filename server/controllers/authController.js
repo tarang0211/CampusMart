@@ -35,6 +35,8 @@ const registerUser = async (req, res) => {
     const normalizedEmail =
       email.trim().toLowerCase();
 
+      
+
     // Check if user already exists
     const existingUser = await User.findOne({
       email: normalizedEmail,
