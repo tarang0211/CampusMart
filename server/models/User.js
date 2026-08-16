@@ -1,4 +1,3 @@
-
 const mongoose = require("mongoose");
 
 const userSchema = new mongoose.Schema(
@@ -19,35 +18,31 @@ const userSchema = new mongoose.Schema(
 
     phone: {
       type: String,
-      required: true,
+      default: "",
       trim: true,
     },
 
     hostel: {
       type: String,
-      required: true,
+      default: "",
       trim: true,
     },
 
     password: {
       type: String,
-      required: true,
-      minlength: 6,
+      default: null,
     },
 
-    isVerified: {
-      type: Boolean,
-      default: false,
-    },
-
-    verificationToken: {
+    googleId: {
       type: String,
       default: null,
+      unique: true,
+      sparse: true,
     },
 
-    verificationTokenExpires: {
-      type: Date,
-      default: null,
+    profilePicture: {
+      type: String,
+      default: "",
     },
 
     wishlist: [
@@ -63,4 +58,3 @@ const userSchema = new mongoose.Schema(
 );
 
 module.exports = mongoose.model("User", userSchema);
-

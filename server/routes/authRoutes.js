@@ -1,17 +1,20 @@
 const express = require("express");
+
 const {
   registerUser,
   loginUser,
-  verifyEmail,
+  googleLogin,
 } = require("../controllers/authController");
-const protect = require("../middleware/authMiddleware");
 
+const protect = require("../middleware/authMiddleware");
 
 const router = express.Router();
 
 router.post("/register", registerUser);
+
 router.post("/login", loginUser);
-router.get("/verify-email", verifyEmail);
+
+router.post("/google", googleLogin);
 
 router.get("/profile", protect, (req, res) => {
   res.status(200).json({
