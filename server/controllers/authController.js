@@ -191,12 +191,18 @@ const googleLogin = async (req, res) => {
     } = payload;
 
     if (!email || !email_verified) {
-      return res.status(401).json({
-        message: "Google email could not be verified",
-      });
-    }
+  return res.status(401).json({
+    message: "Google email could not be verified",
+  });
+}
 
-    const normalizedEmail = email.trim().toLowerCase();
+const normalizedEmail = email.trim().toLowerCase();
+
+if (!normalizedEmail.endsWith("@bitmesra.ac.in")) {
+  return res.status(403).json({
+    message: "Only BIT Mesra email addresses are allowed.",
+  });
+}
 
     let user = await User.findOne({
       email: normalizedEmail,
