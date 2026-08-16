@@ -125,7 +125,7 @@ export const RegisterPage = () => {
       setLoading(true);
 
       const response = await fetch(
-        "http://localhost:5000/api/auth/register",
+        "https://bitmart-backend-r83h.onrender.com/api/auth/register",
         {
           method: "POST",
 
@@ -140,7 +140,7 @@ export const RegisterPage = () => {
             hostel: formData.hostel,
             phone: trimmedPhone,
           }),
-        }
+        },
       );
 
       const data = await response.json();
@@ -154,7 +154,7 @@ export const RegisterPage = () => {
 
       showToast(
         "Registration successful! Check your email to verify your account.",
-        "success"
+        "success",
       );
     } catch (error) {
       console.error("Registration error:", error);

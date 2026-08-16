@@ -4,7 +4,7 @@ import { useAuth } from "./AuthContext";
 
 const WishlistContext = createContext();
 
-const API_URL = "http://localhost:5000/api/wishlist";
+const API_URL = "https://bitmart-backend-r83h.onrender.com/api/wishlist";
 
 export const WishlistProvider = ({ children }) => {
   const { isLoggedIn } = useAuth();

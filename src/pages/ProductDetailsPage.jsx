@@ -60,7 +60,9 @@ export const ProductDetailsPage = () => {
         setLoading(true);
         setError("");
 
-        const response = await fetch(`http://localhost:5000/api/items/${id}`);
+        const response = await fetch(
+          `https://bitmart-backend-r83h.onrender.com/api/items/${id}`,
+        );
 
         const result = await response.json();
 

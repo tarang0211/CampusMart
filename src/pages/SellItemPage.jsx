@@ -220,19 +220,22 @@ export const SellItemPage = () => {
       // SEND TO BACKEND
       // ------------------------------
 
-      const response = await fetch("http://localhost:5000/api/items", {
-        method: "POST",
+      const response = await fetch(
+        "https://bitmart-backend-r83h.onrender.com/api/items",
+        {
+          method: "POST",
 
-        headers: {
-          Authorization: `Bearer ${token}`,
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+
+          // IMPORTANT:
+          // Do NOT add Content-Type here.
+          // Browser automatically creates
+          // multipart/form-data boundary.
+          body: data,
         },
-
-        // IMPORTANT:
-        // Do NOT add Content-Type here.
-        // Browser automatically creates
-        // multipart/form-data boundary.
-        body: data,
-      });
+      );
 
       const result = await response.json();
 

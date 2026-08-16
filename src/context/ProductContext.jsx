@@ -9,7 +9,7 @@ import { useAuth } from "./AuthContext";
 
 const ProductContext = createContext();
 
-const API_URL = "http://localhost:5000/api/items";
+const API_URL = "https://bitmart-backend-r83h.onrender.com/api/items";
 
 export const ProductProvider = ({ children }) => {
   const [products, setProducts] = useState([]);
