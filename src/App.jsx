@@ -24,6 +24,8 @@ import { RegisterPage } from "./pages/RegisterPage";
 import { MyListingsPage } from "./pages/MyListingsPage";
 import { WishlistPage } from "./pages/WishlistPage";
 import { ProfilePage } from "./pages/ProfilePage";
+import { ProfileCompletionPage } from "./pages/ProfileCompletionPage";
+
 import ScrollToTop from "./components/ScrollToTop";
 
 // Protected Route
@@ -64,6 +66,11 @@ export function App() {
                     <Route
                       path="register"
                       element={<RegisterPage />}
+                    />
+
+                    <Route
+                      path="complete-profile"
+                      element={<ProfileCompletionPage />}
                     />
 
                     {/* PROTECTED ROUTES */}

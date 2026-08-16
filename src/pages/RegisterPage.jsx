@@ -1,105 +1,21 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { GoogleLogin } from "@react-oauth/google";
+import { UserPlus, ShieldCheck } from "lucide-react";
 
-import {
-  User,
-  Mail,
-  Phone,
-  Lock,
-  UserPlus,
-  ShieldCheck,
-  CheckCircle,
-} from "lucide-react";
-
-import { HOSTELS } from "../data/dummyData";
+import { useAuth } from "../context/AuthContext";
 import { useToast } from "../context/ToastContext";
-import { Input } from "../components/common/Input";
-import { Button } from "../components/common/Button";
 
 export const RegisterPage = () => {
+  const navigate = useNavigate();
+  const { login } = useAuth();
   const { showToast } = useToast();
 
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    hostel: "HOSTEL-1",
-    phone: "",
-    password: "",
-    confirmPassword: "",
-  });
-
-  const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
-  const [registrationSuccess, setRegistrationSuccess] = useState(false);
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-
-    let updatedValue = value;
-
-    if (name === "name") {
-      updatedValue = value.replace(/[^a-zA-Z\s]/g, "");
-    }
-
-    if (name === "phone") {
-      updatedValue = value.replace(/\D/g, "").slice(0, 10);
-    }
-
-    setFormData((prev) => ({
-      ...prev,
-      [name]: updatedValue,
-    }));
-
-    if (errors[name]) {
-      setErrors((prev) => ({
-        ...prev,
-        [name]: "",
-      }));
-    }
-  };
-
-  const handleRegisterSubmit = async (e) => {
-    e.preventDefault();
-
-    const newErrors = {};
-
-    const trimmedName = formData.name.trim();
-    const trimmedEmail = formData.email.trim().toLowerCase();
-    const trimmedPhone = formData.phone.trim();
-
-    if (!trimmedName) {
-      newErrors.name = "Full name is required";
-    } else if (!/^[a-zA-Z]+(?:\s[a-zA-Z]+)*$/.test(trimmedName)) {
-      newErrors.name = "Name can contain only alphabets and spaces";
-    }
-
-    if (!trimmedEmail) {
-      newErrors.email = "Email is required";
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmedEmail)) {
-      newErrors.email = "Please enter a valid email address";
-    }
-
-    if (!trimmedPhone) {
-      newErrors.phone = "Phone number is required";
-    } else if (!/^\d{10}$/.test(trimmedPhone)) {
-      newErrors.phone = "Phone number must be exactly 10 digits";
-    }
-
-    if (!formData.password) {
-      newErrors.password = "Password is required";
-    } else if (formData.password.length < 6) {
-      newErrors.password = "Password must be at least 6 characters";
-    }
-
-    if (!formData.confirmPassword) {
-      newErrors.confirmPassword = "Please confirm your password";
-    } else if (formData.password !== formData.confirmPassword) {
-      newErrors.confirmPassword = "Passwords do not match";
-    }
-
-    if (Object.keys(newErrors).length > 0) {
-      setErrors(newErrors);
-      showToast("Please correct the highlighted errors.", "error");
+  const handleGoogleSuccess = async (credentialResponse) => {
+    if (!credentialResponse?.credential) {
+      showToast("Google authentication failed.", "error");
       return;
     }
 
@@ -107,18 +23,14 @@ export const RegisterPage = () => {
       setLoading(true);
 
       const response = await fetch(
-        "https://bitmart-backend-r83h.onrender.com/api/auth/register",
+        "https://bitmart-backend-r83h.onrender.com/api/auth/google",
         {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            name: trimmedName,
-            email: trimmedEmail,
-            password: formData.password,
-            hostel: formData.hostel,
-            phone: trimmedPhone,
+            credential: credentialResponse.credential,
           }),
         }
       );
@@ -126,17 +38,49 @@ export const RegisterPage = () => {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.message || "Registration failed");
+        throw new Error(
+          data.message || "Google authentication failed"
+        );
       }
 
-      setRegistrationSuccess(true);
+      // ==========================================
+      // NEW GOOGLE USER
+      // ==========================================
+
+      if (data.isNewUser) {
+        localStorage.setItem(
+          "BitMart_profile_completion_token",
+          data.token
+        );
+
+        localStorage.setItem(
+          "BitMart_profile_completion_user",
+          JSON.stringify(data.user)
+        );
+
+        showToast(
+          "Google registration successful. Complete your profile.",
+          "success"
+        );
+
+        navigate("/complete-profile");
+        return;
+      }
+
+      // ==========================================
+      // EXISTING GOOGLE USER
+      // ==========================================
+
+      login(data.user, data.token);
 
       showToast(
-        "Registration successful! You can now log in.",
+        "Google login successful!",
         "success"
       );
+
+      navigate("/");
     } catch (error) {
-      console.error("Registration error:", error);
+      console.error("Google registration error:", error);
 
       showToast(
         error.message || "Something went wrong",
@@ -147,162 +91,76 @@ export const RegisterPage = () => {
     }
   };
 
-  if (registrationSuccess) {
-    return (
-      <div className="w-full max-w-2xl mx-auto bg-white dark:bg-slate-900 rounded-3xl shadow-xl p-8 sm:p-12">
-        <div className="text-center">
-          <div className="w-16 h-16 rounded-full bg-green-100 dark:bg-green-950/40 flex items-center justify-center mx-auto mb-6">
-            <CheckCircle className="w-9 h-9 text-green-600" />
-          </div>
+  const handleGoogleError = () => {
+    console.error("Google authentication failed");
 
-          <h2 className="text-2xl sm:text-3xl font-extrabold text-gray-900 dark:text-white mb-3">
-            Registration Successful! 🎉
-          </h2>
-
-          <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400 mb-6">
-            Your BitMart account has been created successfully.
-          </p>
-
-          <Link
-            to="/login"
-            className="inline-block w-full sm:w-auto px-8 py-3 rounded-xl bg-blue-600 text-white font-bold hover:bg-blue-700 transition"
-          >
-            Go to Login
-          </Link>
-        </div>
-      </div>
+    showToast(
+      "Google authentication failed. Please try again.",
+      "error"
     );
-  }
+  };
 
   return (
-    <div className="w-full max-w-4xl mx-auto bg-white dark:bg-slate-900 rounded-3xl shadow-xl p-8 sm:p-12">
-      <div className="text-center space-y-2 mb-8">
-        <div className="w-12 h-12 rounded-2xl bg-blue-600 text-white flex items-center justify-center mx-auto shadow-md shadow-blue-500/30">
-          <UserPlus className="w-6 h-6" />
+    <div className="w-full max-w-2xl mx-auto bg-white dark:bg-slate-900 rounded-3xl shadow-xl p-8 sm:p-12">
+      <div className="text-center space-y-3 mb-8">
+        <div className="w-14 h-14 rounded-2xl bg-blue-600 text-white flex items-center justify-center mx-auto shadow-md shadow-blue-500/30">
+          <UserPlus className="w-7 h-7" />
         </div>
 
         <h2 className="text-2xl sm:text-3xl font-extrabold text-gray-900 dark:text-white">
-          Create Your Campus Account
+          Create Your BitMart Account
         </h2>
 
-        <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400">
-          Join fellow students on BitMart to buy and sell campus items.
+        <p className="text-sm text-gray-500 dark:text-gray-400 max-w-md mx-auto">
+          Register using your Google account and complete your
+          profile with your phone number and hostel.
         </p>
       </div>
 
-      <form onSubmit={handleRegisterSubmit} className="space-y-5">
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <Input
-            label="Full Name"
-            name="name"
-            placeholder="e.g. Rahul Sharma"
-            icon={User}
-            value={formData.name}
-            onChange={handleInputChange}
-            error={errors.name}
-            required
-          />
-
-          <Input
-            label="College Email"
-            name="email"
-            type="email"
-            placeholder="Enter Your Email"
-            icon={Mail}
-            value={formData.email}
-            onChange={handleInputChange}
-            error={errors.email}
-            required
-          />
+      <div className="space-y-6">
+        <div className="flex justify-center">
+          {loading ? (
+            <div className="w-full max-w-sm py-3 rounded-xl border border-gray-200 dark:border-slate-700 text-center text-sm font-semibold text-gray-600 dark:text-gray-300">
+              Signing you in with Google...
+            </div>
+          ) : (
+            <GoogleLogin
+              onSuccess={handleGoogleSuccess}
+              onError={handleGoogleError}
+              useOneTap={false}
+              theme="outline"
+              size="large"
+              text="continue_with"
+              shape="rectangular"
+              width="350"
+            />
+          )}
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div className="flex flex-col space-y-1.5">
-            <label className="text-xs font-semibold uppercase tracking-wider text-gray-700 dark:text-gray-300">
-              Hostel / Residence{" "}
-              <span className="text-rose-500">*</span>
-            </label>
+        <div className="p-4 bg-blue-50 dark:bg-blue-950/40 rounded-xl border border-blue-200 dark:border-blue-900 text-xs text-blue-900 dark:text-blue-300 flex items-start gap-3">
+          <ShieldCheck className="w-5 h-5 text-blue-600 shrink-0 mt-0.5" />
 
-            <select
-              name="hostel"
-              value={formData.hostel}
-              onChange={handleInputChange}
-              className="w-full py-2.5 px-4 rounded-xl border border-gray-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-gray-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-            >
-              {HOSTELS.filter((h) => h !== "All Hostels").map((h) => (
-                <option key={h} value={h}>
-                  {h}
-                </option>
-              ))}
-            </select>
+          <div>
+            <p className="font-semibold mb-1">
+              Secure Google Registration
+            </p>
+
+            <p>
+              Your Google account verifies your identity. We do not
+              require a separate email verification link or password
+              for registration.
+            </p>
           </div>
-
-          <Input
-            label="Phone Number (WhatsApp)"
-            name="phone"
-            type="tel"
-            inputMode="numeric"
-            maxLength={10}
-            placeholder="9876543210"
-            icon={Phone}
-            value={formData.phone}
-            onChange={handleInputChange}
-            error={errors.phone}
-            required
-          />
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <Input
-            label="Password"
-            name="password"
-            type="password"
-            placeholder="••••••••"
-            icon={Lock}
-            value={formData.password}
-            onChange={handleInputChange}
-            error={errors.password}
-            required
-          />
-
-          <Input
-            label="Confirm Password"
-            name="confirmPassword"
-            type="password"
-            placeholder="••••••••"
-            icon={Lock}
-            value={formData.confirmPassword}
-            onChange={handleInputChange}
-            error={errors.confirmPassword}
-            required
-          />
+        <div className="text-center text-xs text-gray-500 dark:text-gray-400">
+          After Google authentication, new users will be asked to
+          provide their phone number and hostel before completing
+          registration.
         </div>
+      </div>
 
-        <div className="p-3 bg-blue-50 dark:bg-blue-950/40 rounded-xl border border-blue-200 dark:border-blue-900 text-xs text-blue-900 dark:text-blue-300 flex items-center gap-2">
-          <ShieldCheck className="w-4 h-4 text-blue-600 shrink-0" />
-
-          <span>
-            Your password is securely hashed before being stored in the
-            database.
-          </span>
-        </div>
-
-        <Button
-          type="submit"
-          variant="primary"
-          size="lg"
-          fullWidth
-          icon={UserPlus}
-          disabled={loading}
-          className="py-3 font-bold text-base"
-        >
-          {loading
-            ? "Creating Account..."
-            : "Create Account & Join BitMart"}
-        </Button>
-      </form>
-
-      <div className="pt-6 text-center text-xs text-gray-500 dark:text-gray-400">
+      <div className="pt-8 text-center text-xs text-gray-500 dark:text-gray-400">
         Already have an account?{" "}
         <Link
           to="/login"
