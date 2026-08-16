@@ -2,17 +2,13 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
 import {
-  Mail,
-  Lock,
   Building2,
-  LogIn,
   ShieldCheck,
+  LogIn,
 } from "lucide-react";
 
 import { useAuth } from "../context/AuthContext";
 import { useToast } from "../context/ToastContext";
-import { Input } from "../components/common/Input";
-import { Button } from "../components/common/Button";
 import { GoogleLogin } from "@react-oauth/google";
 
 export const LoginPage = () => {
@@ -21,68 +17,7 @@ export const LoginPage = () => {
   const { login } = useAuth();
   const { showToast } = useToast();
 
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
-
-  // =========================
-  // NORMAL LOGIN
-  // =========================
-
-  const handleLoginSubmit = async (e) => {
-    e.preventDefault();
-
-    const cleanEmail = email.trim().toLowerCase();
-
-    if (!cleanEmail || !password) {
-      showToast("Please enter your email and password.", "error");
-      return;
-    }
-
-    try {
-      setLoading(true);
-
-      const response = await fetch(
-        "https://bitmart-backend-r83h.onrender.com/api/auth/login",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            email: cleanEmail,
-            password,
-          }),
-        }
-      );
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.message || "Login failed");
-      }
-
-      if (!data.token || !data.user) {
-        throw new Error("Invalid login response from server.");
-      }
-
-      login(data.user, data.token);
-
-      showToast("Welcome back to BitMart! 👋", "success");
-
-      navigate("/");
-    } catch (error) {
-      console.error("Login error:", error);
-
-      showToast(
-        error.message || "Something went wrong. Please try again.",
-        "error"
-      );
-    } finally {
-      setLoading(false);
-    }
-  };
 
   // =========================
   // GOOGLE LOGIN
@@ -123,10 +58,27 @@ export const LoginPage = () => {
         );
       }
 
+      // Existing Google user
+      if (data.isNewUser) {
+        showToast(
+          "Please complete your profile first.",
+          "info"
+        );
+
+        navigate("/complete-profile", {
+          state: {
+            token: data.token,
+            user: data.user,
+          },
+        });
+
+        return;
+      }
+
       login(data.user, data.token);
 
       showToast(
-        "Google login successful! 👋",
+        "Welcome back to BitMart! 👋",
         "success"
       );
 
@@ -144,10 +96,6 @@ export const LoginPage = () => {
     }
   };
 
-  // =========================
-  // UI
-  // =========================
-
   return (
     <div className="w-full min-h-[calc(100vh-80px)] flex items-center justify-center px-4 py-8">
 
@@ -155,7 +103,9 @@ export const LoginPage = () => {
 
         <div className="grid grid-cols-1 lg:grid-cols-2">
 
-          {/* LEFT SIDE */}
+          {/* =========================
+              LEFT SIDE
+          ========================= */}
 
           <div className="bg-gradient-to-br from-blue-600 via-blue-700 to-indigo-800 p-8 sm:p-12 text-white flex flex-col justify-between">
 
@@ -186,6 +136,7 @@ export const LoginPage = () => {
                 </p>
 
               </div>
+
             </div>
 
             <div className="my-8">
@@ -210,20 +161,28 @@ export const LoginPage = () => {
 
           </div>
 
-          {/* RIGHT SIDE */}
+          {/* =========================
+              RIGHT SIDE
+          ========================= */}
 
           <div className="p-8 sm:p-12 flex flex-col justify-center">
 
-            <div className="w-full max-w-md mx-auto space-y-6">
+            <div className="w-full max-w-md mx-auto space-y-7">
 
-              <div className="space-y-1">
+              <div className="text-center space-y-2">
+
+                <div className="w-14 h-14 rounded-2xl bg-blue-100 dark:bg-blue-950/50 text-blue-600 dark:text-blue-400 flex items-center justify-center mx-auto">
+
+                  <LogIn className="w-7 h-7" />
+
+                </div>
 
                 <h3 className="text-2xl font-bold text-gray-900 dark:text-white">
-                  Log in to your account
+                  Welcome Back
                 </h3>
 
-                <p className="text-xs text-gray-500 dark:text-gray-400">
-                  Continue with Google or use your email and password.
+                <p className="text-sm text-gray-500 dark:text-gray-400">
+                  Sign in securely using your BIT Mesra Google account.
                 </p>
 
               </div>
@@ -251,71 +210,25 @@ export const LoginPage = () => {
               </div>
 
               {googleLoading && (
-                <p className="text-center text-xs text-gray-500">
+                <p className="text-center text-xs text-gray-500 dark:text-gray-400">
                   Signing in with Google...
                 </p>
               )}
 
-              {/* DIVIDER */}
+              {/* SECURITY MESSAGE */}
 
-              <div className="flex items-center gap-3">
+              <div className="p-4 bg-blue-50 dark:bg-blue-950/40 rounded-xl border border-blue-200 dark:border-blue-900 text-xs text-blue-900 dark:text-blue-300 flex items-start gap-2">
 
-                <div className="flex-1 h-px bg-gray-200 dark:bg-slate-700" />
+                <ShieldCheck className="w-4 h-4 text-blue-600 shrink-0 mt-0.5" />
 
-                <span className="text-xs text-gray-400">
-                  OR
+                <span>
+                  Only verified <strong>@bitmesra.ac.in</strong> Google
+                  accounts can access BitMart.
                 </span>
-
-                <div className="flex-1 h-px bg-gray-200 dark:bg-slate-700" />
 
               </div>
 
-              {/* LOGIN FORM */}
-
-              <form
-                onSubmit={handleLoginSubmit}
-                className="space-y-4"
-              >
-
-                <Input
-                  label="Email Address"
-                  type="email"
-                  placeholder="Enter Your Email"
-                  icon={Mail}
-                  value={email}
-                  onChange={(e) =>
-                    setEmail(e.target.value)
-                  }
-                  required
-                />
-
-                <Input
-                  label="Password"
-                  type="password"
-                  placeholder="••••••••"
-                  icon={Lock}
-                  value={password}
-                  onChange={(e) =>
-                    setPassword(e.target.value)
-                  }
-                  required
-                />
-
-                <Button
-                  type="submit"
-                  variant="primary"
-                  size="lg"
-                  fullWidth
-                  icon={LogIn}
-                  disabled={loading || googleLoading}
-                  className="py-3 font-bold"
-                >
-                  {loading
-                    ? "Signing In..."
-                    : "Sign In to BitMart"}
-                </Button>
-
-              </form>
+              {/* REGISTER */}
 
               <div className="pt-2 text-center text-xs text-gray-500 dark:text-gray-400">
 
