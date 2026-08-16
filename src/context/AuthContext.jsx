@@ -9,12 +9,10 @@ export const AuthProvider = ({ children }) => {
 
   const [user, setUser] = useState(() => {
     try {
-      const saved = localStorage.getItem("BitMart_user");
-
-      return saved ? JSON.parse(saved) : null;
+      const savedUser = localStorage.getItem("BitMart_user");
+      return savedUser ? JSON.parse(savedUser) : null;
     } catch (error) {
       console.error("Error loading saved user:", error);
-
       return null;
     }
   });
@@ -41,19 +39,23 @@ export const AuthProvider = ({ children }) => {
     setUser(userData);
     setToken(jwtToken);
 
-    localStorage.setItem("BitMart_user", JSON.stringify(userData));
+    localStorage.setItem(
+      "BitMart_user",
+      JSON.stringify(userData)
+    );
 
-    localStorage.setItem("BitMart_token", jwtToken);
+    localStorage.setItem(
+      "BitMart_token",
+      jwtToken
+    );
   };
 
   // =========================
   // REGISTER
   // =========================
-  // Registration does NOT login the user.
-  // User must verify email first.
 
-  const register = (userData) => {
-    console.log("Registration successful:", userData);
+  const register = (userData, jwtToken) => {
+    login(userData, jwtToken);
   };
 
   // =========================
@@ -65,7 +67,6 @@ export const AuthProvider = ({ children }) => {
     setToken(null);
 
     localStorage.removeItem("BitMart_user");
-
     localStorage.removeItem("BitMart_token");
   };
 
@@ -74,19 +75,22 @@ export const AuthProvider = ({ children }) => {
   // =========================
 
   const updateProfile = (updatedFields) => {
-    setUser((prev) => {
-      if (!prev) {
-        return prev;
+    setUser((prevUser) => {
+      if (!prevUser) {
+        return null;
       }
 
-      const next = {
-        ...prev,
+      const updatedUser = {
+        ...prevUser,
         ...updatedFields,
       };
 
-      localStorage.setItem("BitMart_user", JSON.stringify(next));
+      localStorage.setItem(
+        "BitMart_user",
+        JSON.stringify(updatedUser)
+      );
 
-      return next;
+      return updatedUser;
     });
   };
 
@@ -100,7 +104,6 @@ export const AuthProvider = ({ children }) => {
         user,
         token,
         isLoggedIn,
-
         login,
         register,
         logout,
@@ -116,4 +119,6 @@ export const AuthProvider = ({ children }) => {
 // CUSTOM HOOK
 // =========================
 
-export const useAuth = () => useContext(AuthContext);
+export const useAuth = () => {
+  return useContext(AuthContext);
+};

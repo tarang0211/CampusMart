@@ -21,20 +21,13 @@ const registerUser = async (req, res) => {
       phone,
     } = req.body;
 
-    if (
-      !name ||
-      !email ||
-      !password ||
-      !hostel ||
-      !phone
-    ) {
+    if (!name || !email || !password || !hostel || !phone) {
       return res.status(400).json({
         message: "All fields are required",
       });
     }
 
-    const normalizedEmail =
-      email.trim().toLowerCase();
+    const normalizedEmail = email.trim().toLowerCase();
 
     const existingUser = await User.findOne({
       email: normalizedEmail,
@@ -46,8 +39,7 @@ const registerUser = async (req, res) => {
       });
     }
 
-    const hashedPassword =
-      await bcrypt.hash(password, 10);
+    const hashedPassword = await bcrypt.hash(password, 10);
 
     const user = await User.create({
       name: name.trim(),
@@ -102,8 +94,7 @@ const loginUser = async (req, res) => {
       });
     }
 
-    const normalizedEmail =
-      email.trim().toLowerCase();
+    const normalizedEmail = email.trim().toLowerCase();
 
     const user = await User.findOne({
       email: normalizedEmail,
@@ -122,11 +113,10 @@ const loginUser = async (req, res) => {
       });
     }
 
-    const isPasswordCorrect =
-      await bcrypt.compare(
-        password,
-        user.password
-      );
+    const isPasswordCorrect = await bcrypt.compare(
+      password,
+      user.password
+    );
 
     if (!isPasswordCorrect) {
       return res.status(401).json({
@@ -166,7 +156,7 @@ const loginUser = async (req, res) => {
 };
 
 // =========================
-// GOOGLE LOGIN
+// GOOGLE LOGIN / REGISTER
 // =========================
 
 const googleLogin = async (req, res) => {
@@ -196,6 +186,7 @@ const googleLogin = async (req, res) => {
       sub: googleId,
       email,
       name,
+      picture,
       email_verified,
     } = payload;
 
@@ -205,26 +196,66 @@ const googleLogin = async (req, res) => {
       });
     }
 
-    const normalizedEmail =
-      email.trim().toLowerCase();
+    const normalizedEmail = email.trim().toLowerCase();
 
     let user = await User.findOne({
       email: normalizedEmail,
     });
+
+    // ==========================================
+    // NEW GOOGLE USER
+    // ==========================================
 
     if (!user) {
       user = await User.create({
         name: name || "Google User",
         email: normalizedEmail,
         googleId,
+        profilePicture: picture || "",
         phone: "",
         hostel: "",
         password: null,
       });
-    } else if (!user.googleId) {
-      user.googleId = googleId;
-      await user.save();
+
+      const profileToken = jwt.sign(
+        {
+          userId: user._id,
+          profileCompletion: true,
+        },
+        process.env.JWT_SECRET,
+        {
+          expiresIn: "15m",
+        }
+      );
+
+      return res.status(201).json({
+        message: "Google registration started",
+        isNewUser: true,
+        token: profileToken,
+        user: {
+          id: user._id,
+          name: user.name,
+          email: user.email,
+          phone: user.phone,
+          hostel: user.hostel,
+          profilePicture: user.profilePicture,
+        },
+      });
     }
+
+    // ==========================================
+    // EXISTING USER
+    // ==========================================
+
+    if (!user.googleId) {
+      user.googleId = googleId;
+    }
+
+    if (!user.profilePicture && picture) {
+      user.profilePicture = picture;
+    }
+
+    await user.save();
 
     const token = jwt.sign(
       {
@@ -236,8 +267,9 @@ const googleLogin = async (req, res) => {
       }
     );
 
-    res.status(200).json({
+    return res.status(200).json({
       message: "Google login successful",
+      isNewUser: false,
       token,
       user: {
         id: user._id,
@@ -245,6 +277,7 @@ const googleLogin = async (req, res) => {
         email: user.email,
         phone: user.phone,
         hostel: user.hostel,
+        profilePicture: user.profilePicture,
       },
     });
   } catch (error) {

@@ -32,21 +32,15 @@ export const RegisterPage = () => {
   const [loading, setLoading] = useState(false);
   const [registrationSuccess, setRegistrationSuccess] = useState(false);
 
-  // =========================
-  // INPUT CHANGE
-  // =========================
-
   const handleInputChange = (e) => {
     const { name, value } = e.target;
 
     let updatedValue = value;
 
-    // Name: allow only alphabets and spaces
     if (name === "name") {
       updatedValue = value.replace(/[^a-zA-Z\s]/g, "");
     }
 
-    // Phone: allow only numbers and maximum 10 digits
     if (name === "phone") {
       updatedValue = value.replace(/\D/g, "").slice(0, 10);
     }
@@ -64,10 +58,6 @@ export const RegisterPage = () => {
     }
   };
 
-  // =========================
-  // REGISTER
-  // =========================
-
   const handleRegisterSubmit = async (e) => {
     e.preventDefault();
 
@@ -77,47 +67,39 @@ export const RegisterPage = () => {
     const trimmedEmail = formData.email.trim().toLowerCase();
     const trimmedPhone = formData.phone.trim();
 
-    // Name
     if (!trimmedName) {
       newErrors.name = "Full name is required";
     } else if (!/^[a-zA-Z]+(?:\s[a-zA-Z]+)*$/.test(trimmedName)) {
       newErrors.name = "Name can contain only alphabets and spaces";
     }
 
-    // Email
     if (!trimmedEmail) {
       newErrors.email = "Email is required";
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmedEmail)) {
       newErrors.email = "Please enter a valid email address";
     }
 
-    // Phone
     if (!trimmedPhone) {
       newErrors.phone = "Phone number is required";
     } else if (!/^\d{10}$/.test(trimmedPhone)) {
       newErrors.phone = "Phone number must be exactly 10 digits";
     }
 
-    // Password
     if (!formData.password) {
       newErrors.password = "Password is required";
     } else if (formData.password.length < 6) {
       newErrors.password = "Password must be at least 6 characters";
     }
 
-    // Confirm password
     if (!formData.confirmPassword) {
       newErrors.confirmPassword = "Please confirm your password";
     } else if (formData.password !== formData.confirmPassword) {
       newErrors.confirmPassword = "Passwords do not match";
     }
 
-    // Show validation errors
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
-
       showToast("Please correct the highlighted errors.", "error");
-
       return;
     }
 
@@ -128,11 +110,9 @@ export const RegisterPage = () => {
         "https://bitmart-backend-r83h.onrender.com/api/auth/register",
         {
           method: "POST",
-
           headers: {
             "Content-Type": "application/json",
           },
-
           body: JSON.stringify({
             name: trimmedName,
             email: trimmedEmail,
@@ -140,7 +120,7 @@ export const RegisterPage = () => {
             hostel: formData.hostel,
             phone: trimmedPhone,
           }),
-        },
+        }
       );
 
       const data = await response.json();
@@ -149,25 +129,23 @@ export const RegisterPage = () => {
         throw new Error(data.message || "Registration failed");
       }
 
-      // Registration successful
       setRegistrationSuccess(true);
 
       showToast(
-        "Registration successful! Check your email to verify your account.",
-        "success",
+        "Registration successful! You can now log in.",
+        "success"
       );
     } catch (error) {
       console.error("Registration error:", error);
 
-      showToast(error.message || "Something went wrong", "error");
+      showToast(
+        error.message || "Something went wrong",
+        "error"
+      );
     } finally {
       setLoading(false);
     }
   };
-
-  // =========================
-  // SUCCESS SCREEN
-  // =========================
 
   if (registrationSuccess) {
     return (
@@ -182,37 +160,8 @@ export const RegisterPage = () => {
           </h2>
 
           <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400 mb-6">
-            Your account has been created successfully.
+            Your BitMart account has been created successfully.
           </p>
-
-          <div className="p-5 bg-blue-50 dark:bg-blue-950/40 rounded-2xl border border-blue-200 dark:border-blue-900 text-left mb-6">
-            <div className="flex items-start gap-3">
-              <Mail className="w-6 h-6 text-blue-600 shrink-0 mt-0.5" />
-
-              <div>
-                <h3 className="font-bold text-blue-900 dark:text-blue-300 mb-1">
-                  Verify your email
-                </h3>
-
-                <p className="text-sm text-blue-800 dark:text-blue-400">
-                  We've sent a verification link to:
-                </p>
-
-                <p className="font-semibold text-blue-900 dark:text-blue-200 mt-1 break-all">
-                  {formData.email}
-                </p>
-
-                <p className="text-sm text-blue-800 dark:text-blue-400 mt-3">
-                  Please check your inbox and click the{" "}
-                  <strong>Verify Email</strong> button to activate your account.
-                </p>
-
-                <p className="text-xs text-blue-700 dark:text-blue-500 mt-3">
-                  The verification link will expire after 24 hours.
-                </p>
-              </div>
-            </div>
-          </div>
 
           <Link
             to="/login"
@@ -224,10 +173,6 @@ export const RegisterPage = () => {
       </div>
     );
   }
-
-  // =========================
-  // REGISTER FORM
-  // =========================
 
   return (
     <div className="w-full max-w-4xl mx-auto bg-white dark:bg-slate-900 rounded-3xl shadow-xl p-8 sm:p-12">
@@ -241,7 +186,7 @@ export const RegisterPage = () => {
         </h2>
 
         <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400">
-          Join fellow students on BitMart to buy and sell verified campus items.
+          Join fellow students on BitMart to buy and sell campus items.
         </p>
       </div>
 
@@ -274,7 +219,8 @@ export const RegisterPage = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div className="flex flex-col space-y-1.5">
             <label className="text-xs font-semibold uppercase tracking-wider text-gray-700 dark:text-gray-300">
-              Hostel / Residence <span className="text-rose-500">*</span>
+              Hostel / Residence{" "}
+              <span className="text-rose-500">*</span>
             </label>
 
             <select
@@ -341,15 +287,6 @@ export const RegisterPage = () => {
           </span>
         </div>
 
-        <div className="p-3 bg-amber-50 dark:bg-amber-950/30 rounded-xl border border-amber-200 dark:border-amber-900 text-xs text-amber-900 dark:text-amber-300 flex items-center gap-2">
-          <Mail className="w-4 h-4 text-amber-600 shrink-0" />
-
-          <span>
-            After registration, you'll receive a verification email. You must
-            verify your email before logging in.
-          </span>
-        </div>
-
         <Button
           type="submit"
           variant="primary"
@@ -359,7 +296,9 @@ export const RegisterPage = () => {
           disabled={loading}
           className="py-3 font-bold text-base"
         >
-          {loading ? "Creating Account..." : "Create Account & Join BitMart"}
+          {loading
+            ? "Creating Account..."
+            : "Create Account & Join BitMart"}
         </Button>
       </form>
 

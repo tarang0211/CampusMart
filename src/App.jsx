@@ -5,8 +5,6 @@ import {
   Route,
 } from "react-router-dom";
 
-import { GoogleOAuthProvider } from "@react-oauth/google";
-
 // Context Providers
 import { ThemeProvider } from "./context/ThemeContext";
 import { ToastProvider } from "./context/ToastContext";
@@ -26,7 +24,6 @@ import { RegisterPage } from "./pages/RegisterPage";
 import { MyListingsPage } from "./pages/MyListingsPage";
 import { WishlistPage } from "./pages/WishlistPage";
 import { ProfilePage } from "./pages/ProfilePage";
-import { VerifyEmailPage } from "./pages/VerifyEmailPage";
 import ScrollToTop from "./components/ScrollToTop";
 
 // Protected Route
@@ -34,90 +31,79 @@ import { ProtectedRoute } from "./components/ProtectedRoute";
 
 export function App() {
   return (
-    <GoogleOAuthProvider
-      clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}
-    >
-      <ThemeProvider>
-        <ToastProvider>
-          <AuthProvider>
-            <WishlistProvider>
-              <ProductProvider>
-                <BrowserRouter>
-                  <ScrollToTop />
+    <ThemeProvider>
+      <ToastProvider>
+        <AuthProvider>
+          <WishlistProvider>
+            <ProductProvider>
+              <BrowserRouter>
+                <ScrollToTop />
 
-                  <Routes>
-                    <Route path="/" element={<RootLayout />}>
+                <Routes>
+                  <Route
+                    path="/"
+                    element={<RootLayout />}
+                  >
+                    {/* PUBLIC ROUTES */}
 
-                      {/* PUBLIC ROUTES */}
+                    <Route
+                      index
+                      element={<HomePage />}
+                    />
 
+                    <Route
+                      path="product/:id"
+                      element={<ProductDetailsPage />}
+                    />
+
+                    <Route
+                      path="login"
+                      element={<LoginPage />}
+                    />
+
+                    <Route
+                      path="register"
+                      element={<RegisterPage />}
+                    />
+
+                    {/* PROTECTED ROUTES */}
+
+                    <Route element={<ProtectedRoute />}>
                       <Route
-                        index
-                        element={<HomePage />}
+                        path="sell"
+                        element={<SellItemPage />}
                       />
 
                       <Route
-                        path="product/:id"
-                        element={<ProductDetailsPage />}
+                        path="my-listings"
+                        element={<MyListingsPage />}
                       />
 
                       <Route
-                        path="login"
-                        element={<LoginPage />}
+                        path="wishlist"
+                        element={<WishlistPage />}
                       />
 
                       <Route
-                        path="register"
-                        element={<RegisterPage />}
+                        path="profile"
+                        element={<ProfilePage />}
                       />
-
-                      <Route
-                        path="verify-email"
-                        element={<VerifyEmailPage />}
-                      />
-
-                      {/* PROTECTED ROUTES */}
-
-                      <Route element={<ProtectedRoute />}>
-
-                        <Route
-                          path="sell"
-                          element={<SellItemPage />}
-                        />
-
-                        <Route
-                          path="my-listings"
-                          element={<MyListingsPage />}
-                        />
-
-                        <Route
-                          path="wishlist"
-                          element={<WishlistPage />}
-                        />
-
-                        <Route
-                          path="profile"
-                          element={<ProfilePage />}
-                        />
-
-                      </Route>
-
-                      {/* FALLBACK */}
-
-                      <Route
-                        path="*"
-                        element={<HomePage />}
-                      />
-
                     </Route>
-                  </Routes>
 
-                </BrowserRouter>
-              </ProductProvider>
-            </WishlistProvider>
-          </AuthProvider>
-        </ToastProvider>
-      </ThemeProvider>
-    </GoogleOAuthProvider>
+                    {/* FALLBACK */}
+
+                    <Route
+                      path="*"
+                      element={<HomePage />}
+                    />
+                  </Route>
+                </Routes>
+              </BrowserRouter>
+            </ProductProvider>
+          </WishlistProvider>
+        </AuthProvider>
+      </ToastProvider>
+    </ThemeProvider>
   );
 }
 
