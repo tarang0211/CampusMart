@@ -291,6 +291,74 @@ const googleLogin = async (req, res) => {
 };
 
 // =========================
+// COMPLETE GOOGLE PROFILE
+// =========================
+
+const completeProfile = async (req, res) => {
+  try {
+    const { phone, hostel } = req.body;
+
+    if (!phone || !hostel) {
+      return res.status(400).json({
+        message: "Phone number and hostel are required",
+      });
+    }
+
+    const trimmedPhone = phone.trim();
+    const trimmedHostel = hostel.trim();
+
+    if (!trimmedPhone || !trimmedHostel) {
+      return res.status(400).json({
+        message: "Phone number and hostel are required",
+      });
+    }
+
+    const user = await User.findById(req.user);
+
+    if (!user) {
+      return res.status(404).json({
+        message: "User not found",
+      });
+    }
+
+    user.phone = trimmedPhone;
+    user.hostel = trimmedHostel;
+
+    await user.save();
+
+    const token = jwt.sign(
+      {
+        userId: user._id,
+      },
+      process.env.JWT_SECRET,
+      {
+        expiresIn: "7d",
+      }
+    );
+
+    return res.status(200).json({
+      message: "Profile completed successfully",
+      token,
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        phone: user.phone,
+        hostel: user.hostel,
+        profilePicture: user.profilePicture,
+      },
+    });
+  } catch (error) {
+    console.error("Profile completion error:", error);
+
+    return res.status(500).json({
+      message: "Server error",
+      error: error.message,
+    });
+  }
+};
+
+// =========================
 // EXPORT
 // =========================
 
@@ -298,4 +366,5 @@ module.exports = {
   registerUser,
   loginUser,
   googleLogin,
+  completeProfile,
 };
