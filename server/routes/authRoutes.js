@@ -7,10 +7,9 @@ const {
   completeProfile,
 } = require("../controllers/authController");
 
-const {
-  protect,
-  profileCompletionProtect,
-} = require("../middleware/authMiddleware");
+const protect = require("../middleware/authMiddleware");
+const profileCompletionProtect =
+  require("../middleware/authMiddleware").profileCompletionProtect;
 
 const router = express.Router();
 
