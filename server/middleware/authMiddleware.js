@@ -68,7 +68,8 @@ const profileCompletionProtect = (req, res, next) => {
   }
 };
 
-module.exports = {
-  protect,
-  profileCompletionProtect,
-};
+// Keep the old default export working
+module.exports = protect;
+
+// Also expose the new middleware
+module.exports.profileCompletionProtect = profileCompletionProtect;
