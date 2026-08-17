@@ -13,7 +13,8 @@ export const Button = ({
   className = '',
   ...props
 }) => {
-  const baseStyles = 'inline-flex items-center justify-center font-medium rounded-xl transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100 cursor-pointer';
+  const baseStyles =
+    'inline-flex items-center justify-center font-medium rounded-xl transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100 cursor-pointer';
 
   const sizeStyles = {
     sm: 'px-3 py-1.5 text-xs gap-1.5',
@@ -22,15 +23,33 @@ export const Button = ({
   };
 
   const variantStyles = {
-    primary: 'bg-blue-600 hover:bg-blue-700 text-white shadow-md shadow-blue-500/20 focus:ring-blue-500 border border-transparent',
-    secondary: 'bg-gray-100 hover:bg-gray-200 text-gray-800 dark:bg-slate-800 dark:hover:bg-slate-700 dark:text-gray-100 focus:ring-gray-400 border border-transparent',
-    outline: 'border border-gray-300 dark:border-slate-700 bg-transparent hover:bg-gray-50 dark:hover:bg-slate-800/60 text-gray-700 dark:text-gray-200 focus:ring-blue-500',
-    ghost: 'bg-transparent hover:bg-gray-100 dark:hover:bg-slate-800 text-gray-700 dark:text-gray-200 focus:ring-gray-400 border border-transparent',
-    danger: 'bg-rose-600 hover:bg-rose-700 text-white shadow-md shadow-rose-500/20 focus:ring-rose-500 border border-transparent',
-    success: 'bg-emerald-600 hover:bg-emerald-700 text-white shadow-md shadow-emerald-500/20 focus:ring-emerald-500 border border-transparent',
+    primary:
+      'bg-[#176b5b] hover:bg-[#125448] text-white shadow-md shadow-[#176b5b]/20 focus:ring-[#176b5b] border border-transparent dark:bg-[#2f8c76] dark:hover:bg-[#26735f] dark:focus:ring-[#3faf91]',
+
+    secondary:
+      'bg-[#eeece6] hover:bg-[#e3e0d8] text-[#363431] dark:bg-[#18201d] dark:hover:bg-[#202a26] dark:text-[#f3f4f1] focus:ring-[#176b5b] border border-transparent',
+
+    outline:
+      'border border-[#d6d3cb] dark:border-[#35403a] bg-transparent hover:bg-[#f7f6f2] dark:hover:bg-[#18201d] text-[#5f5c56] dark:text-[#d0d6d3] focus:ring-[#176b5b]',
+
+    ghost:
+      'bg-transparent hover:bg-[#f1efe9] dark:hover:bg-[#18201d] text-[#5f5c56] dark:text-[#d0d6d3] focus:ring-[#176b5b] border border-transparent',
+
+    danger:
+      'bg-rose-600 hover:bg-rose-700 text-white shadow-md shadow-rose-500/20 focus:ring-rose-500 border border-transparent',
+
+    success:
+      'bg-[#176b5b] hover:bg-[#125448] text-white shadow-md shadow-[#176b5b]/20 focus:ring-[#176b5b] border border-transparent dark:bg-[#2f8c76] dark:hover:bg-[#26735f] dark:focus:ring-[#3faf91]',
   };
 
   const widthStyle = fullWidth ? 'w-full' : '';
+
+  const iconSize =
+    size === 'sm'
+      ? 'w-3.5 h-3.5'
+      : size === 'lg'
+        ? 'w-5 h-5'
+        : 'w-4 h-4';
 
   return (
     <button
@@ -40,9 +59,15 @@ export const Button = ({
       className={`${baseStyles} ${sizeStyles[size]} ${variantStyles[variant]} ${widthStyle} ${className}`}
       {...props}
     >
-      {Icon && iconPosition === 'left' && <Icon className={size === 'sm' ? 'w-3.5 h-3.5' : size === 'lg' ? 'w-5 h-5' : 'w-4 h-4'} />}
+      {Icon && iconPosition === 'left' && (
+        <Icon className={iconSize} />
+      )}
+
       <span>{children}</span>
-      {Icon && iconPosition === 'right' && <Icon className={size === 'sm' ? 'w-3.5 h-3.5' : size === 'lg' ? 'w-5 h-5' : 'w-4 h-4'} />}
+
+      {Icon && iconPosition === 'right' && (
+        <Icon className={iconSize} />
+      )}
     </button>
   );
 };

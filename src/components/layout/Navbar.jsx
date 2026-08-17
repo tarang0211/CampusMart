@@ -1,20 +1,18 @@
 import React, { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { 
-  Building2, 
-  Search, 
-  PlusCircle, 
-  Heart, 
-  Package, 
-  User, 
-  Sun, 
-  Moon, 
-  Menu, 
-  X, 
-  LogOut, 
-  LogIn, 
-  Sparkles 
+import {
+  Search,
+  Plus,
+  Heart,
+  Package,
+  User,
+  Sun,
+  Moon,
+  Menu,
+  X,
+  LogOut,
 } from 'lucide-react';
+
 import { useTheme } from '../../context/ThemeContext';
 import { useAuth } from '../../context/AuthContext';
 import { useWishlist } from '../../context/WishlistContext';
@@ -26,76 +24,93 @@ export const Navbar = () => {
   const { user, isLoggedIn, logout } = useAuth();
   const { wishlist } = useWishlist();
   const { products, searchQuery, setSearchQuery } = useProducts();
+
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const navigate = useNavigate();
   const location = useLocation();
 
-  const userListingsCount = products.filter(p => p.seller && p.seller.id === (user?.id || 'usr-me')).length;
+  const userListingsCount = products.filter(
+    (product) =>
+      product.seller &&
+      product.seller.id === (user?.id || 'usr-me')
+  ).length;
 
   const handleSearchSubmit = (e) => {
     e.preventDefault();
+
     if (location.pathname !== '/') {
       navigate('/');
     }
   };
 
+  const closeMobileMenu = () => {
+    setMobileMenuOpen(false);
+  };
+
   const isActive = (path) => location.pathname === path;
 
   return (
-    <header className="sticky top-0 z-40 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border-b border-gray-200/80 dark:border-slate-800 transition-colors duration-200">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16 gap-4">
-          
-          {/* Brand Logo */}
-          <Link to="/" className="flex items-center gap-2.5 group shrink-0">
-            <div className="w-10 h-10 rounded-xl bg-blue-600 flex items-center justify-center text-white shadow-md shadow-blue-600/30 group-hover:scale-105 transition-transform duration-200">
-              <Building2 className="w-6 h-6" />
+    <header className="sticky top-0 z-40 border-b border-[#e5e2da] bg-[#f7f6f2] dark:border-[#27312d] dark:bg-[#0d1412]">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="flex h-16 items-center gap-4">
+
+          {/* Brand */}
+          <Link
+            to="/"
+            className="flex shrink-0 items-center gap-2.5"
+          >
+            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#176b5b] text-white dark:bg-[#2f8c76]">
+              <span className="text-sm font-bold">B</span>
             </div>
-            <div className="flex flex-col">
-              <div className="flex items-center gap-1">
-                <span className="font-extrabold text-xl tracking-tight text-gray-900 dark:text-white">
-                  BIT<span className="text-blue-600 dark:text-blue-400">Mart</span>
-                </span>
-                <span className="bg-blue-100 text-blue-700 dark:bg-blue-900/50 dark:text-blue-300 text-[10px] font-bold px-1.5 py-0.5 rounded-full uppercase tracking-wider hidden sm:inline-block">
-                  Campus Only
-                </span>
-              </div>
-              <span className="text-[10px] text-gray-500 dark:text-gray-400 font-medium -mt-1 hidden sm:block">
-                Buy & Sell College Essentials
+
+            <div className="leading-none">
+              <span className="text-xl font-bold tracking-tight text-[#171717] dark:text-[#f3f4f1]">
+                BIT<span className="text-[#176b5b] dark:text-[#3faf91]">Mart</span>
+              </span>
+
+              <span className="mt-1 hidden text-[10px] font-medium text-[#77746d] dark:text-[#8f9993] sm:block">
+                BIT Mesra Marketplace
               </span>
             </div>
           </Link>
 
-          {/* Quick Search Bar */}
-          <form onSubmit={handleSearchSubmit} className="hidden md:flex flex-1 max-w-md relative">
+          {/* Desktop Search */}
+          <form
+            onSubmit={handleSearchSubmit}
+            className="relative hidden min-w-0 flex-1 md:block md:max-w-xl"
+          >
+            <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-[#96938b] dark:text-[#727d77]" />
+
             <input
               type="text"
-              placeholder="Search books, cycles, kettle, electronics..."
+              placeholder="Search books, electronics, cycles..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-10 py-2 rounded-full border border-gray-300 dark:border-slate-700 bg-gray-50 dark:bg-slate-800/80 text-gray-900 dark:text-white placeholder-gray-400 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white dark:focus:bg-slate-900 transition-all duration-200"
+              className="h-10 w-full rounded-lg border border-[#d6d3cb] bg-white pl-10 pr-10 text-sm text-[#171717] outline-none transition focus:border-[#176b5b] focus:ring-2 focus:ring-[#176b5b]/10 dark:border-[#303a35] dark:bg-[#111b18] dark:text-[#f3f4f1] dark:placeholder:text-[#727d77] dark:focus:border-[#3faf91] dark:focus:bg-[#111b18] dark:focus:ring-[#3faf91]/10"
             />
-            <Search className="w-4 h-4 text-gray-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+
             {searchQuery && (
               <button
                 type="button"
                 onClick={() => setSearchQuery('')}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-[#96938b] transition hover:text-[#363431] dark:text-[#727d77] dark:hover:text-[#d5dad7]"
+                aria-label="Clear search"
               >
-                <X className="w-4 h-4" />
+                <X className="h-4 w-4" />
               </button>
             )}
           </form>
 
-          {/* Navigation Actions (Desktop) */}
-          <nav className="hidden lg:flex items-center gap-1.5">
+          {/* Desktop Navigation */}
+          <nav className="ml-auto hidden items-center gap-1 lg:flex">
+
             <Link
               to="/"
-              className={`px-3 py-2 rounded-xl text-sm font-medium transition-colors ${
+              className={`px-3 py-2 text-sm font-medium transition-colors ${
                 isActive('/')
-                  ? 'text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-950/40'
-                  : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-800'
+                  ? 'text-[#176b5b] dark:text-[#3faf91]'
+                  : 'text-[#5f5c56] hover:text-[#176b5b] dark:text-[#b5bcb8] dark:hover:text-[#3faf91]'
               }`}
             >
               Home
@@ -103,16 +118,17 @@ export const Navbar = () => {
 
             <Link
               to="/wishlist"
-              className={`relative px-3 py-2 rounded-xl text-sm font-medium flex items-center gap-1.5 transition-colors ${
+              className={`relative flex items-center gap-1.5 px-3 py-2 text-sm font-medium transition-colors ${
                 isActive('/wishlist')
-                  ? 'text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-950/40'
-                  : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-800'
+                  ? 'text-[#176b5b] dark:text-[#3faf91]'
+                  : 'text-[#5f5c56] hover:text-[#176b5b] dark:text-[#b5bcb8] dark:hover:text-[#3faf91]'
               }`}
             >
-              <Heart className="w-4 h-4" />
-              <span>Wishlist</span>
+              <Heart className="h-4 w-4" />
+              Wishlist
+
               {wishlist.length > 0 && (
-                <span className="bg-rose-500 text-white text-[11px] font-bold px-1.5 py-0.2 rounded-full min-w-[18px] text-center">
+                <span className="ml-0.5 text-xs font-semibold text-[#88857e] dark:text-[#7f8983]">
                   {wishlist.length}
                 </span>
               )}
@@ -120,187 +136,263 @@ export const Navbar = () => {
 
             <Link
               to="/my-listings"
-              className={`relative px-3 py-2 rounded-xl text-sm font-medium flex items-center gap-1.5 transition-colors ${
+              className={`relative flex items-center gap-1.5 px-3 py-2 text-sm font-medium transition-colors ${
                 isActive('/my-listings')
-                  ? 'text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-950/40'
-                  : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-800'
+                  ? 'text-[#176b5b] dark:text-[#3faf91]'
+                  : 'text-[#5f5c56] hover:text-[#176b5b] dark:text-[#b5bcb8] dark:hover:text-[#3faf91]'
               }`}
             >
-              <Package className="w-4 h-4" />
-              <span>My Listings</span>
+              <Package className="h-4 w-4" />
+              Listings
+
               {userListingsCount > 0 && (
-                <span className="bg-blue-600 text-white text-[11px] font-bold px-1.5 py-0.2 rounded-full min-w-[18px] text-center">
+                <span className="ml-0.5 text-xs font-semibold text-[#88857e] dark:text-[#7f8983]">
                   {userListingsCount}
                 </span>
               )}
             </Link>
 
-            <Link
-              to="/sell"
-              className="ml-1"
-            >
-              <Button variant="primary" size="sm" icon={PlusCircle}>
+            {/* Sell Item */}
+            <Link to="/sell" className="ml-2">
+              <Button
+                variant="primary"
+                size="sm"
+                icon={Plus}
+                className="!border-[#176b5b] !bg-[#176b5b] !text-white hover:!border-[#125448] hover:!bg-[#125448] focus:!ring-[#176b5b]/30 dark:!border-[#2f8c76] dark:!bg-[#2f8c76] dark:hover:!border-[#26735f] dark:hover:!bg-[#26735f]"
+              >
                 Sell Item
               </Button>
             </Link>
           </nav>
 
-          {/* Right Control Tools */}
-          <div className="flex items-center gap-2">
-            {/* Theme Toggle Button */}
+          {/* Right Controls */}
+          <div className="flex shrink-0 items-center gap-1">
+
+            {/* Theme Toggle */}
             <button
               onClick={toggleDarkMode}
-              className="p-2 rounded-xl text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-800 transition-colors"
-              title={darkMode ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+              className="flex h-9 w-9 items-center justify-center rounded-lg text-[#5f5c56] transition-colors hover:bg-[#ece9e1] hover:text-[#176b5b] dark:text-[#b5bcb8] dark:hover:bg-[#18201d] dark:hover:text-[#3faf91]"
+              title={darkMode ? 'Switch to light mode' : 'Switch to dark mode'}
+              aria-label={darkMode ? 'Switch to light mode' : 'Switch to dark mode'}
             >
-              {darkMode ? <Sun className="w-5 h-5 text-amber-400" /> : <Moon className="w-5 h-5 text-slate-700" />}
+              {darkMode ? (
+                <Sun className="h-4.5 w-4.5 text-amber-400" />
+              ) : (
+                <Moon className="h-4.5 w-4.5 text-[#176b5b] dark:text-[#3faf91]" />
+              )}
             </button>
 
-            {/* User Profile / Auth buttons */}
+            {/* Profile / Auth */}
             {isLoggedIn ? (
-              <div className="hidden sm:flex items-center gap-2 border-l border-gray-200 dark:border-slate-800 pl-2">
-                <Link
-                  to="/profile"
-                  className="flex items-center gap-2.5 p-1 rounded-xl hover:bg-gray-100 dark:hover:bg-slate-800 transition-colors"
-                >
-                  <img
-                    src={user?.avatar || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&q=80&w=100'}
-                    alt={user?.name}
-                    className="w-8 h-8 rounded-full object-cover border-2 border-blue-500"
-                  />
-                  <div className="flex flex-col text-left">
-                    <span className="text-xs font-bold text-gray-900 dark:text-white leading-tight">
-                      {user?.name?.split(' ')[0]}
-                    </span>
-                    <span className="text-[10px] text-gray-500 dark:text-gray-400">
-                      {user?.hostel?.split(' ')[0]}
-                    </span>
-                  </div>
-                </Link>
-              </div>
+              <Link
+                to="/profile"
+                className="ml-1 hidden items-center gap-2 border-l border-[#e5e2da] pl-3 sm:flex dark:border-[#303a35]"
+              >
+                <img
+                  src={
+                    user?.avatar ||
+                    'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&q=80&w=100'
+                  }
+                  alt={user?.name || 'Profile'}
+                  className="h-8 w-8 rounded-full object-cover ring-1 ring-[#c9d8d2] dark:ring-[#36564c]"
+                />
+
+                <div className="hidden text-left xl:block">
+                  <p className="max-w-[100px] truncate text-xs font-semibold text-[#171717] dark:text-[#f3f4f1]">
+                    {user?.name?.split(' ')[0]}
+                  </p>
+
+                  <p className="max-w-[100px] truncate text-[10px] text-[#77746d] dark:text-[#8f9993]">
+                    {user?.hostel || 'Student'}
+                  </p>
+                </div>
+              </Link>
             ) : (
-              <div className="hidden sm:flex items-center gap-2">
+              <div className="ml-1 hidden items-center gap-1 sm:flex">
                 <Link to="/login">
                   <Button variant="ghost" size="sm">
-                    Log In
+                    Log in
                   </Button>
                 </Link>
+
                 <Link to="/register">
-                  <Button variant="primary" size="sm">
+                  <Button
+                    variant="primary"
+                    size="sm"
+                    className="!border-[#176b5b] !bg-[#176b5b] hover:!border-[#125448] hover:!bg-[#125448] dark:!border-[#2f8c76] dark:!bg-[#2f8c76] dark:hover:!border-[#26735f] dark:hover:!bg-[#26735f]"
+                  >
                     Register
                   </Button>
                 </Link>
               </div>
             )}
 
-            {/* Mobile Hamburger Toggle */}
+            {/* Mobile Menu */}
             <button
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="lg:hidden p-2 rounded-xl text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-slate-800 transition-colors"
+              onClick={() => setMobileMenuOpen((prev) => !prev)}
+              className="ml-1 flex h-9 w-9 items-center justify-center rounded-lg text-[#5f5c56] transition-colors hover:bg-[#ece9e1] hover:text-[#176b5b] dark:text-[#d0d6d3] dark:hover:bg-[#18201d] dark:hover:text-[#3faf91] lg:hidden"
+              aria-label="Toggle menu"
             >
-              {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+              {mobileMenuOpen ? (
+                <X className="h-5 w-5" />
+              ) : (
+                <Menu className="h-5 w-5" />
+              )}
             </button>
           </div>
-
         </div>
       </div>
 
-      {/* Mobile Drawer Menu */}
+      {/* Mobile Menu */}
       {mobileMenuOpen && (
-        <div className="lg:hidden bg-white dark:bg-slate-900 border-b border-gray-200 dark:border-slate-800 px-4 pt-2 pb-6 space-y-4 animate-fade-in">
-          {/* Mobile Search */}
-          <form onSubmit={handleSearchSubmit} className="relative mt-2">
-            <input
-              type="text"
-              placeholder="Search items..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-gray-300 dark:border-slate-700 bg-gray-50 dark:bg-slate-800 text-gray-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-            <Search className="w-4 h-4 text-gray-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
-          </form>
+        <div className="border-t border-[#e5e2da] bg-[#f7f6f2] dark:border-[#27312d] dark:bg-[#0d1412] lg:hidden">
+          <div className="mx-auto max-w-7xl space-y-4 px-4 py-4 sm:px-6">
 
-          <div className="flex flex-col space-y-1 pt-2">
-            <Link
-              to="/"
-              onClick={() => setMobileMenuOpen(false)}
-              className="px-4 py-2.5 rounded-xl text-sm font-medium text-gray-800 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-slate-800"
+            {/* Mobile Search */}
+            <form
+              onSubmit={handleSearchSubmit}
+              className="relative"
             >
-              Home
-            </Link>
-            <Link
-              to="/sell"
-              onClick={() => setMobileMenuOpen(false)}
-              className="px-4 py-2.5 rounded-xl text-sm font-medium bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 flex items-center justify-between"
-            >
-              <span className="flex items-center gap-2">
-                <PlusCircle className="w-4 h-4" />
-                Sell Item
-              </span>
-              <span className="text-xs font-bold bg-blue-600 text-white px-2 py-0.5 rounded-full">Post Now</span>
-            </Link>
-            <Link
-              to="/wishlist"
-              onClick={() => setMobileMenuOpen(false)}
-              className="px-4 py-2.5 rounded-xl text-sm font-medium text-gray-800 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-slate-800 flex items-center justify-between"
-            >
-              <span className="flex items-center gap-2">
-                <Heart className="w-4 h-4 text-rose-500" />
-                Wishlist
-              </span>
-              {wishlist.length > 0 && (
-                <span className="bg-rose-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">
-                  {wishlist.length}
-                </span>
-              )}
-            </Link>
-            <Link
-              to="/my-listings"
-              onClick={() => setMobileMenuOpen(false)}
-              className="px-4 py-2.5 rounded-xl text-sm font-medium text-gray-800 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-slate-800 flex items-center justify-between"
-            >
-              <span className="flex items-center gap-2">
-                <Package className="w-4 h-4 text-blue-500" />
-                My Listings
-              </span>
-              {userListingsCount > 0 && (
-                <span className="bg-blue-600 text-white text-xs font-bold px-2 py-0.5 rounded-full">
-                  {userListingsCount}
-                </span>
-              )}
-            </Link>
-            <Link
-              to="/profile"
-              onClick={() => setMobileMenuOpen(false)}
-              className="px-4 py-2.5 rounded-xl text-sm font-medium text-gray-800 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-slate-800 flex items-center gap-2"
-            >
-              <User className="w-4 h-4 text-gray-500" />
-              Profile ({user?.name})
-            </Link>
-          </div>
+              <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-[#96938b] dark:text-[#727d77]" />
 
-          <div className="pt-2 border-t border-gray-200 dark:border-slate-800 flex items-center justify-between">
-            {isLoggedIn ? (
-              <button
-                onClick={() => {
-                  logout();
-                  setMobileMenuOpen(false);
-                }}
-                className="text-sm font-medium text-rose-600 dark:text-rose-400 flex items-center gap-2 px-2 py-1"
+              <input
+                type="text"
+                placeholder="Search listings..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="h-11 w-full rounded-lg border border-[#d6d3cb] bg-white pl-10 pr-4 text-sm text-[#171717] outline-none focus:border-[#176b5b] focus:ring-2 focus:ring-[#176b5b]/10 dark:border-[#303a35] dark:bg-[#111b18] dark:text-[#f3f4f1] dark:placeholder:text-[#727d77] dark:focus:border-[#3faf91] dark:focus:ring-[#3faf91]/10"
+              />
+            </form>
+
+            {/* Mobile Links */}
+            <div className="space-y-1">
+
+              <Link
+                to="/"
+                onClick={closeMobileMenu}
+                className={`flex items-center rounded-lg px-3 py-2.5 text-sm font-medium ${
+                  isActive('/')
+                    ? 'bg-[#e7f0ec] text-[#176b5b] dark:bg-[#182923] dark:text-[#3faf91]'
+                    : 'text-[#5f5c56] dark:text-[#d0d6d3]'
+                }`}
               >
-                <LogOut className="w-4 h-4" />
-                Log Out
-              </button>
-            ) : (
-              <div className="flex items-center gap-2 w-full">
-                <Link to="/login" onClick={() => setMobileMenuOpen(false)} className="flex-1">
-                  <Button variant="outline" size="sm" fullWidth>Log In</Button>
+                Home
+              </Link>
+
+              <Link
+                to="/wishlist"
+                onClick={closeMobileMenu}
+                className={`flex items-center justify-between rounded-lg px-3 py-2.5 text-sm font-medium ${
+                  isActive('/wishlist')
+                    ? 'bg-[#e7f0ec] text-[#176b5b] dark:bg-[#182923] dark:text-[#3faf91]'
+                    : 'text-[#5f5c56] dark:text-[#d0d6d3]'
+                }`}
+              >
+                <span className="flex items-center gap-2.5">
+                  <Heart className="h-4 w-4" />
+                  Wishlist
+                </span>
+
+                {wishlist.length > 0 && (
+                  <span className="text-xs text-[#88857e] dark:text-[#7f8983]">
+                    {wishlist.length}
+                  </span>
+                )}
+              </Link>
+
+              <Link
+                to="/my-listings"
+                onClick={closeMobileMenu}
+                className={`flex items-center justify-between rounded-lg px-3 py-2.5 text-sm font-medium ${
+                  isActive('/my-listings')
+                    ? 'bg-[#e7f0ec] text-[#176b5b] dark:bg-[#182923] dark:text-[#3faf91]'
+                    : 'text-[#5f5c56] dark:text-[#d0d6d3]'
+                }`}
+              >
+                <span className="flex items-center gap-2.5">
+                  <Package className="h-4 w-4" />
+                  My Listings
+                </span>
+
+                {userListingsCount > 0 && (
+                  <span className="text-xs text-[#88857e] dark:text-[#7f8983]">
+                    {userListingsCount}
+                  </span>
+                )}
+              </Link>
+
+              {isLoggedIn && (
+                <Link
+                  to="/profile"
+                  onClick={closeMobileMenu}
+                  className={`flex items-center gap-2.5 rounded-lg px-3 py-2.5 text-sm font-medium ${
+                    isActive('/profile')
+                      ? 'bg-[#e7f0ec] text-[#176b5b] dark:bg-[#182923] dark:text-[#3faf91]'
+                      : 'text-[#5f5c56] dark:text-[#d0d6d3]'
+                  }`}
+                >
+                  <User className="h-4 w-4" />
+                  Profile
                 </Link>
-                <Link to="/register" onClick={() => setMobileMenuOpen(false)} className="flex-1">
-                  <Button variant="primary" size="sm" fullWidth>Register</Button>
-                </Link>
-              </div>
-            )}
+              )}
+
+              <Link
+                to="/sell"
+                onClick={closeMobileMenu}
+                className="mt-2 flex items-center justify-center gap-2 rounded-lg bg-[#176b5b] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#125448] dark:bg-[#2f8c76] dark:hover:bg-[#26735f]"
+              >
+                <Plus className="h-4 w-4" />
+                Sell an Item
+              </Link>
+            </div>
+
+            {/* Mobile Bottom */}
+            <div className="border-t border-[#e5e2da] pt-3 dark:border-[#303a35]">
+              {isLoggedIn ? (
+                <button
+                  onClick={() => {
+                    logout();
+                    closeMobileMenu();
+                  }}
+                  className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-red-600 dark:text-red-400"
+                >
+                  <LogOut className="h-4 w-4" />
+                  Log out
+                </button>
+              ) : (
+                <div className="flex gap-2">
+                  <Link
+                    to="/login"
+                    onClick={closeMobileMenu}
+                    className="flex-1"
+                  >
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      fullWidth
+                    >
+                      Log in
+                    </Button>
+                  </Link>
+
+                  <Link
+                    to="/register"
+                    onClick={closeMobileMenu}
+                    className="flex-1"
+                  >
+                    <Button
+                      variant="primary"
+                      size="sm"
+                      fullWidth
+                      className="!border-[#176b5b] !bg-[#176b5b] hover:!border-[#125448] hover:!bg-[#125448] dark:!border-[#2f8c76] dark:!bg-[#2f8c76] dark:hover:!border-[#26735f] dark:hover:!bg-[#26735f]"
+                    >
+                      Register
+                    </Button>
+                  </Link>
+                </div>
+              )}
+            </div>
+
           </div>
         </div>
       )}

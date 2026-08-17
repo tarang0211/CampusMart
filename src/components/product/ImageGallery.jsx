@@ -7,7 +7,7 @@ export const ImageGallery = ({ images = [] }) => {
 
   if (!images || images.length === 0) {
     return (
-      <div className="w-full aspect-[4/3] rounded-3xl bg-gray-100 dark:bg-slate-800 flex items-center justify-center text-gray-400">
+      <div className="flex aspect-[4/3] w-full items-center justify-center rounded-3xl border border-[#e3e0d8] bg-[#f1efe9] text-[#99968f] dark:border-[#2a342f] dark:bg-[#18201d] dark:text-[#7f8983]">
         No images available
       </div>
     );
@@ -15,20 +15,21 @@ export const ImageGallery = ({ images = [] }) => {
 
   return (
     <div className="space-y-4">
+
       {/* Large Featured Image */}
-      <div className="relative group w-full aspect-[4/3] rounded-3xl overflow-hidden bg-gray-100 dark:bg-slate-800 border border-gray-200/80 dark:border-slate-800 shadow-md">
+      <div className="group relative aspect-[4/3] w-full overflow-hidden rounded-3xl border border-[#e3e0d8] bg-[#f1efe9] shadow-md dark:border-[#2a342f] dark:bg-[#18201d]">
         <img
           src={images[selectedImageIndex]}
           alt="Product details preview"
-          className="w-full h-full object-cover"
+          className="h-full w-full object-cover"
         />
 
         <button
           onClick={() => setIsLightboxOpen(true)}
-          className="absolute bottom-4 right-4 p-2.5 rounded-xl bg-slate-900/70 text-white backdrop-blur-md hover:bg-slate-900 transition-colors shadow-lg"
+          className="absolute bottom-4 right-4 rounded-xl bg-[#111614]/80 p-2.5 text-white shadow-lg backdrop-blur-md transition-colors hover:bg-[#111614]"
           title="Full screen preview"
         >
-          <Maximize2 className="w-4 h-4" />
+          <Maximize2 className="h-4 w-4" />
         </button>
       </div>
 
@@ -39,13 +40,17 @@ export const ImageGallery = ({ images = [] }) => {
             <button
               key={index}
               onClick={() => setSelectedImageIndex(index)}
-              className={`relative w-20 h-20 rounded-2xl overflow-hidden border-2 transition-all duration-200 shrink-0 cursor-pointer ${
+              className={`relative h-20 w-20 shrink-0 cursor-pointer overflow-hidden rounded-2xl border-2 transition-all duration-200 ${
                 selectedImageIndex === index
-                  ? 'border-blue-600 ring-2 ring-blue-500/20 scale-105 shadow-md'
-                  : 'border-gray-200 dark:border-slate-800 opacity-70 hover:opacity-100'
+                  ? 'scale-105 border-[#176b5b] ring-2 ring-[#176b5b]/20 shadow-md dark:border-[#3faf91] dark:ring-[#3faf91]/20'
+                  : 'border-[#e3e0d8] opacity-70 hover:opacity-100 dark:border-[#2a342f]'
               }`}
             >
-              <img src={imgUrl} alt={`Thumbnail ${index + 1}`} className="w-full h-full object-cover" />
+              <img
+                src={imgUrl}
+                alt={`Thumbnail ${index + 1}`}
+                className="h-full w-full object-cover"
+              />
             </button>
           ))}
         </div>
@@ -53,17 +58,19 @@ export const ImageGallery = ({ images = [] }) => {
 
       {/* Lightbox Modal */}
       {isLightboxOpen && (
-        <div className="fixed inset-0 z-50 bg-slate-950/90 backdrop-blur-md flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#07100d]/95 p-4 backdrop-blur-md">
           <button
             onClick={() => setIsLightboxOpen(false)}
-            className="absolute top-6 right-6 p-3 rounded-full bg-white/10 text-white hover:bg-white/20 transition-colors"
+            className="absolute right-6 top-6 rounded-full bg-white/10 p-3 text-white transition-colors hover:bg-white/20"
+            aria-label="Close image preview"
           >
-            <X className="w-6 h-6" />
+            <X className="h-6 w-6" />
           </button>
+
           <img
             src={images[selectedImageIndex]}
             alt="Full size view"
-            className="max-w-full max-h-[85vh] object-contain rounded-2xl shadow-2xl"
+            className="max-h-[85vh] max-w-full rounded-2xl object-contain shadow-2xl"
           />
         </div>
       )}

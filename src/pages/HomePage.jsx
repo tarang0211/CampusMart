@@ -1,17 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-
 import {
-  Sparkles,
-  PlusCircle,
-  ShieldCheck,
-  Zap,
+  ArrowRight,
   PackageSearch,
+  Plus,
+  Sparkles,
   X
 } from 'lucide-react';
 
 import { CATEGORIES } from '../data/dummyData';
-
 import { useProducts } from '../context/ProductContext';
 
 import { ProductCard } from '../components/product/ProductCard';
@@ -20,14 +17,8 @@ import { SearchBar } from '../components/product/SearchBar';
 import { FilterSidebar } from '../components/product/FilterSidebar';
 import { ProductGridSkeleton } from '../components/common/LoadingSkeleton';
 import { EmptyState } from '../components/common/EmptyState';
-import { Button } from '../components/common/Button';
 
 export const HomePage = () => {
-
-  // =========================
-  // PRODUCT CONTEXT
-  // =========================
-
   const {
     filteredProducts,
     selectedCategory,
@@ -37,430 +28,261 @@ export const HomePage = () => {
     fetchProducts
   } = useProducts();
 
-
-  // =========================
-  // STATES
-  // =========================
-
-  const [isLoading, setIsLoading] =
-    useState(true);
-
-  const [mobileFilterOpen, setMobileFilterOpen] =
-    useState(false);
-
-
-  // =========================
-  // FETCH PRODUCTS
-  // =========================
+  const [isLoading, setIsLoading] = useState(true);
+  const [mobileFilterOpen, setMobileFilterOpen] = useState(false);
 
   useEffect(() => {
-
     const loadProducts = async () => {
-
       try {
-
         setIsLoading(true);
-
         await fetchProducts();
-
       } catch (error) {
-
-        console.error(
-          'Failed to load products:',
-          error
-        );
-
+        console.error('Failed to load products:', error);
       } finally {
-
         setIsLoading(false);
-
       }
-
     };
 
     loadProducts();
-
   }, []);
 
+  const availableProducts = filteredProducts.filter(
+    (product) => !product.isSold
+  );
 
-  // =========================
-  // ONLY ACTIVE PRODUCTS
-  // =========================
-
-  const availableProducts =
-    filteredProducts.filter(
-      (product) =>
-        !product.isSold
-    );
-
-
-  // =========================
-  // FEATURED PRODUCTS
-  // =========================
-
-  const featuredProducts =
-    availableProducts.filter(
-      (product) =>
-        product.featured
-    );
-
-
-  // =========================
-  // CLEAR FILTER CHECK
-  // =========================
+  const featuredProducts = availableProducts.filter(
+    (product) => product.featured
+  );
 
   const hasActiveFilters =
-    searchQuery !== '' ||
-    selectedCategory !== 'all';
+    searchQuery !== '' || selectedCategory !== 'all';
 
-
-  // =========================
-  // JSX
-  // =========================
+  const showingFilteredView = hasActiveFilters;
 
   return (
+    <div className="min-h-screen bg-[#f7f6f2] pb-16 dark:bg-[#111614]">
 
-    <div className="min-h-screen pb-16 space-y-10">
+      {/* =========================================
+          MARKETPLACE INTRO
+      ========================================= */}
 
-      {/* =========================
-          HERO SECTION
-      ========================= */}
+      <section className="border-b border-[#e5e2da] bg-[#f7f6f2] dark:border-[#27312d] dark:bg-[#111614]">
+        <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 sm:py-12 lg:px-8 lg:py-14">
 
-      <section className="relative overflow-hidden bg-gradient-to-br from-blue-700 via-blue-600 to-indigo-800 text-white pt-12 pb-16 px-4 sm:px-6 lg:px-8 shadow-xl">
+          <div className="max-w-3xl">
 
-        {/* Background Circles */}
-
-        <div className="absolute -top-24 -right-24 w-96 h-96 bg-white/10 rounded-full blur-3xl pointer-events-none" />
-
-        <div className="absolute -bottom-24 -left-24 w-96 h-96 bg-blue-400/20 rounded-full blur-3xl pointer-events-none" />
-
-
-        <div className="max-w-7xl mx-auto relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-
-
-          {/* HERO TEXT */}
-
-          <div className="lg:col-span-7 space-y-6 text-center lg:text-left">
-
-            <div className="inline-flex items-center gap-2 bg-white/15 backdrop-blur-md px-3.5 py-1.5 rounded-full text-xs font-semibold text-blue-100 border border-white/20">
-
-              <Sparkles className="w-4 h-4 text-amber-300" />
-
-              <span>
-                Campus Verified Marketplace
-              </span>
-
+            <div className="mb-4 flex items-center gap-2 text-sm font-semibold text-[#176b5b] dark:text-[#3faf91]">
+              <span className="h-2 w-2 rounded-full bg-[#176b5b] dark:bg-[#3faf91]" />
+              BIT Mesra Marketplace
             </div>
 
-
-            <h1 className="text-3xl sm:text-5xl font-extrabold tracking-tight leading-tight">
-
-              Buy & Sell College Essentials
-
-              <br className="hidden sm:block" />
-
-              <span className="text-amber-300 underline decoration-amber-300/40 underline-offset-8">
-
-                Hostel to Hostel
-
-              </span>
-
+            <h1 className="max-w-3xl text-3xl font-bold tracking-tight text-[#171717] sm:text-4xl lg:text-5xl dark:text-[#f3f4f1]">
+              Buy and sell around campus.
             </h1>
 
-
-            <p className="text-base sm:text-lg text-blue-100 max-w-2xl font-normal leading-relaxed">
-
-              Find cheap textbooks, lab kits, cycles,
-              scientific calculators, and kettles from
-              students in your own campus.
-
-              Zero delivery fees, instant WhatsApp contact!
-
+            <p className="mt-4 max-w-2xl text-base leading-7 text-[#6b6963] sm:text-lg dark:text-[#a8afa9]">
+              Find textbooks, electronics, cycles, hostel essentials
+              and more from students at BIT Mesra.
             </p>
 
-
-            {/* HERO BUTTONS */}
-
-            <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3 pt-2">
+            <div className="mt-7 flex flex-wrap items-center gap-3">
 
               <Link
                 to="/sell"
-                className="w-full sm:w-auto"
+                className="inline-flex h-11 items-center gap-2 rounded-lg bg-[#176b5b] px-5 text-sm font-semibold text-white transition-colors hover:bg-[#125448] dark:bg-[#2f8c76] dark:hover:bg-[#26735f]"
               >
-
-                <Button
-                  variant="primary"
-                  size="lg"
-                  icon={PlusCircle}
-                  className="bg-amber-400 hover:bg-amber-300 text-gray-950 font-bold shadow-lg shadow-amber-500/20 border-none w-full sm:w-auto"
-                >
-                  Sell Your Item Now
-                </Button>
-
+                <Plus className="h-4 w-4" />
+                Sell an item
               </Link>
 
-
               <a
-                href="#explore"
-                className="w-full sm:w-auto"
+                href="#listings"
+                className="inline-flex h-11 items-center gap-2 rounded-lg border border-[#d6d3cb] bg-white px-5 text-sm font-semibold text-[#363431] transition-colors hover:border-[#176b5b] hover:text-[#176b5b] dark:border-[#303a35] dark:bg-[#18201d] dark:text-gray-200 dark:hover:border-[#3faf91] dark:hover:text-[#3faf91]"
               >
-
-                <Button
-                  variant="outline"
-                  size="lg"
-                  className="border-white/30 text-white hover:bg-white/10 w-full sm:w-auto"
-                >
-                  Browse Campus Catalog
-                </Button>
-
+                Browse listings
+                <ArrowRight className="h-4 w-4" />
               </a>
-
-            </div>
-
-
-            {/* FEATURE BADGES */}
-
-            <div className="pt-4 flex flex-wrap items-center justify-center lg:justify-start gap-6 text-xs text-blue-200 font-medium border-t border-white/10">
-
-              <div className="flex items-center gap-1.5">
-
-                
-
-                <span>
-                  
-                </span>
-
-              </div>
-
-
-              <div className="flex items-center gap-1.5">
-
-                
-
-                <span>
-                  
-                </span>
-
-              </div>
-
-            </div>
-
-          </div>
-
-
-          {/* HERO IMAGE */}
-
-          <div className="lg:col-span-5 hidden lg:block">
-
-            <div className="relative mx-auto max-w-md bg-white/10 backdrop-blur-xl p-4 rounded-3xl border border-white/20 shadow-2xl">
-
-              <img
-                src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&q=80&w=800"
-                alt="College Marketplace Students"
-                className="w-full h-72 object-cover rounded-2xl shadow-inner"
-              />
-
-              <div className="mt-3 flex items-center justify-between px-2 text-xs font-semibold text-white">
-
-                <span>
-                  Campus Marketplace
-                </span>
-
-                <span className="bg-emerald-500 text-white px-2 py-0.5 rounded-full text-[10px]">
-                  Live
-                </span>
-
-              </div>
 
             </div>
 
           </div>
 
         </div>
-
       </section>
 
 
-      {/* =========================
-          MAIN CATALOG
-      ========================= */}
+      {/* =========================================
+          MAIN MARKETPLACE
+      ========================================= */}
 
-      <div
+      <main
         id="explore"
-        className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8"
+        className="mx-auto max-w-7xl px-4 pt-8 sm:px-6 lg:px-8"
       >
 
+        {/* =========================================
+            SEARCH
+        ========================================= */}
 
-        {/* SEARCH */}
+        <section className="mb-8">
+          <SearchBar
+            onOpenMobileFilter={() =>
+              setMobileFilterOpen(true)
+            }
+          />
+        </section>
 
-        <SearchBar
-          onOpenMobileFilter={() =>
-            setMobileFilterOpen(true)
-          }
-        />
 
-
-        {/* =========================
+        {/* =========================================
             CATEGORIES
-        ========================= */}
+        ========================================= */}
 
-        <div className="space-y-3">
+        <section className="mb-10">
 
-          <div className="flex items-center justify-between">
+          <div className="mb-4 flex items-end justify-between gap-4">
 
-            <h2 className="text-lg font-bold text-gray-900 dark:text-white">
-              Browse by Category
-            </h2>
+            <div>
+              <h2 className="text-xl font-bold tracking-tight text-[#171717] dark:text-[#f3f4f1]">
+                Browse categories
+              </h2>
 
-            <span className="text-xs text-gray-500 dark:text-gray-400 font-medium">
+              <p className="mt-1 text-sm text-[#77746d] dark:text-[#8f9993]">
+                Find what you need faster.
+              </p>
+            </div>
+
+            <span className="shrink-0 text-xs font-medium text-[#88857e] dark:text-[#7f8983]">
               {CATEGORIES.length - 1} categories
             </span>
 
           </div>
 
+          <div className="flex gap-3 overflow-x-auto pb-2 no-scrollbar">
 
-          <div className="flex items-center gap-3 overflow-x-auto pb-2 no-scrollbar">
-
-            {CATEGORIES.map(
-              (category) => (
-
-                <CategoryCard
-                  key={category.id}
-                  category={category}
-                  isSelected={
-                    selectedCategory ===
-                    category.id
-                  }
-                  onClick={() =>
-                    setSelectedCategory(
-                      category.id
-                    )
-                  }
-                />
-
-              )
-            )}
+            {CATEGORIES.map((category) => (
+              <CategoryCard
+                key={category.id}
+                category={category}
+                isSelected={
+                  selectedCategory === category.id
+                }
+                onClick={() =>
+                  setSelectedCategory(category.id)
+                }
+              />
+            ))}
 
           </div>
 
-        </div>
+        </section>
 
 
-        {/* =========================
-            FEATURED DEALS
-        ========================= */}
+        {/* =========================================
+            FEATURED LISTINGS
+        ========================================= */}
 
-        {featuredProducts.length > 0 &&
-          searchQuery === '' &&
-          selectedCategory === 'all' && (
+        {!showingFilteredView &&
+          featuredProducts.length > 0 && (
 
-            <div className="space-y-4 pt-2">
+            <section className="mb-10">
 
-              <div className="flex items-center justify-between">
+              <div className="mb-4 flex items-center justify-between">
 
-                <div className="flex items-center gap-2">
+                <div>
+                  <div className="flex items-center gap-2">
 
-                  <Sparkles className="w-5 h-5 text-amber-500" />
+                    <Sparkles className="h-4 w-4 text-[#d97745]" />
 
-                  <h2 className="text-xl font-extrabold text-gray-900 dark:text-white">
-                    Featured Deals
-                  </h2>
+                    <h2 className="text-xl font-bold tracking-tight text-[#171717] dark:text-[#f3f4f1]">
+                      Featured listings
+                    </h2>
 
+                  </div>
+
+                  <p className="mt-1 text-sm text-[#77746d] dark:text-[#8f9993]">
+                    A few listings worth checking out.
+                  </p>
                 </div>
 
-                <span className="text-xs font-semibold text-blue-600 dark:text-blue-400">
-                  Top Picks by Students
+                <span className="hidden text-xs font-medium text-[#77746d] sm:block dark:text-[#8f9993]">
+                  From BIT Mesra students
                 </span>
 
               </div>
 
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
 
                 {featuredProducts
                   .slice(0, 4)
-                  .map(
-                    (product) => (
-
-                      <ProductCard
-                        key={product.id}
-                        product={product}
-                      />
-
-                    )
-                  )}
+                  .map((product) => (
+                    <ProductCard
+                      key={product.id}
+                      product={product}
+                    />
+                  ))}
 
               </div>
 
-            </div>
-
+            </section>
           )}
 
 
-        {/* =========================
-            FILTER + PRODUCTS
-        ========================= */}
+        {/* =========================================
+            LISTINGS
+        ========================================= */}
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start pt-4">
-
+        <section
+          id="listings"
+          className="grid grid-cols-1 items-start gap-8 lg:grid-cols-12"
+        >
 
           {/* DESKTOP FILTER */}
 
-          <div className="hidden lg:block lg:col-span-3 sticky top-24">
-
+          <aside className="hidden lg:sticky lg:top-24 lg:col-span-3 lg:block">
             <FilterSidebar />
-
-          </div>
+          </aside>
 
 
           {/* PRODUCTS */}
 
-          <div className="lg:col-span-9 space-y-6">
+          <div className="space-y-5 lg:col-span-9">
 
+            {/* LISTING HEADER */}
 
-            {/* HEADER */}
-
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white dark:bg-slate-900 p-4 rounded-2xl border border-gray-200/80 dark:border-slate-800 shadow-xs">
+            <div className="flex flex-col gap-3 border-b border-[#dfdcd4] pb-4 sm:flex-row sm:items-end sm:justify-between dark:border-[#2a342f]">
 
               <div>
 
-                <h2 className="text-xl font-bold text-gray-900 dark:text-white">
+                <h2 className="text-xl font-bold tracking-tight text-[#171717] dark:text-[#f3f4f1]">
 
                   {selectedCategory === 'all'
-                    ? 'All Campus Listings'
-                    : `${selectedCategory} Listings`}
+                    ? 'All listings'
+                    : `${selectedCategory} listings`}
 
                 </h2>
 
-
-                <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
-
-                  Showing {availableProducts.length}{' '}
-
-                  {availableProducts.length === 1
-                    ? 'item'
-                    : 'items'}{' '}
-
-                  available on campus
-
+                <p className="mt-1 text-sm text-[#77746d] dark:text-[#8f9993]">
+                  {isLoading
+                    ? 'Finding available items...'
+                    : `${availableProducts.length} ${
+                        availableProducts.length === 1
+                          ? 'item'
+                          : 'items'
+                      } available on campus`}
                 </p>
 
               </div>
 
 
-              {/* CLEAR FILTER */}
-
               {hasActiveFilters && (
 
                 <button
+                  type="button"
                   onClick={resetFilters}
-                  className="text-xs font-bold text-blue-600 dark:text-blue-400 hover:underline flex items-center gap-1"
+                  className="inline-flex w-fit items-center gap-1.5 text-sm font-semibold text-[#176b5b] transition-colors hover:text-[#125448] dark:text-[#3faf91] dark:hover:text-[#52c6a7]"
                 >
-
-                  <X className="w-3.5 h-3.5" />
-
-                  Clear Search & Filters
-
+                  <X className="h-3.5 w-3.5" />
+                  Clear filters
                 </button>
 
               )}
@@ -468,9 +290,7 @@ export const HomePage = () => {
             </div>
 
 
-            {/* =========================
-                LOADING
-            ========================= */}
+            {/* LOADING */}
 
             {isLoading ? (
 
@@ -478,28 +298,26 @@ export const HomePage = () => {
 
             ) : availableProducts.length === 0 ? (
 
-              <EmptyState
-                icon={PackageSearch}
-                title="No items found"
-                description="We couldn't find any items matching your filters or search query. Try searching for something else or clearing your filters."
-                actionLabel="Reset All Filters"
-                onAction={resetFilters}
-              />
+              <div className="border border-dashed border-[#d8d5cd] bg-white dark:border-[#35403a] dark:bg-[#18201d]">
+                <EmptyState
+                  icon={PackageSearch}
+                  title="No items found"
+                  description="We couldn't find anything matching your search or filters. Try another search or clear your filters."
+                  actionLabel="Reset All Filters"
+                  onAction={resetFilters}
+                />
+              </div>
 
             ) : (
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5">
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
 
-                {availableProducts.map(
-                  (product) => (
-
-                    <ProductCard
-                      key={product.id}
-                      product={product}
-                    />
-
-                  )
-                )}
+                {availableProducts.map((product) => (
+                  <ProductCard
+                    key={product.id}
+                    product={product}
+                  />
+                ))}
 
               </div>
 
@@ -507,33 +325,25 @@ export const HomePage = () => {
 
           </div>
 
-        </div>
+        </section>
 
-      </div>
+      </main>
 
 
-      {/* =========================
+      {/* =========================================
           MOBILE FILTER DRAWER
-      ========================= */}
+      ========================================= */}
 
       {mobileFilterOpen && (
 
         <div className="fixed inset-0 z-50 flex justify-end lg:hidden">
 
-
-          {/* BACKDROP */}
-
           <div
-            className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm"
-            onClick={() =>
-              setMobileFilterOpen(false)
-            }
+            className="fixed inset-0 bg-black/40"
+            onClick={() => setMobileFilterOpen(false)}
           />
 
-
-          {/* DRAWER */}
-
-          <div className="relative w-full max-w-xs bg-white dark:bg-slate-900 h-full overflow-y-auto p-4 z-10 animate-fade-in shadow-2xl">
+          <div className="relative z-10 h-full w-full max-w-sm overflow-y-auto border-l border-[#e1ded6] bg-[#f7f6f2] p-4 shadow-xl dark:border-[#303a35] dark:bg-[#111614]">
 
             <FilterSidebar
               onCloseMobile={() =>
@@ -548,6 +358,5 @@ export const HomePage = () => {
       )}
 
     </div>
-
   );
 };

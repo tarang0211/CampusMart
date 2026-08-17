@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-
 import {
   Building2,
   ShieldCheck,
   LogIn,
+  ArrowLeft,
 } from "lucide-react";
 
 import { useAuth } from "../context/AuthContext";
@@ -18,10 +18,6 @@ export const LoginPage = () => {
   const { showToast } = useToast();
 
   const [googleLoading, setGoogleLoading] = useState(false);
-
-  // =========================
-  // GOOGLE LOGIN
-  // =========================
 
   const handleGoogleLogin = async (credentialResponse) => {
     try {
@@ -47,23 +43,15 @@ export const LoginPage = () => {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(
-          data.message || "Google login failed."
-        );
+        throw new Error(data.message || "Google login failed.");
       }
 
       if (!data.token || !data.user) {
-        throw new Error(
-          "Invalid response from server."
-        );
+        throw new Error("Invalid response from server.");
       }
 
-      // Existing Google user
       if (data.isNewUser) {
-        showToast(
-          "Please complete your profile first.",
-          "info"
-        );
+        showToast("Please complete your profile first.", "info");
 
         navigate("/complete-profile", {
           state: {
@@ -77,18 +65,14 @@ export const LoginPage = () => {
 
       login(data.user, data.token);
 
-      showToast(
-        "Welcome back to BitMart! 👋",
-        "success"
-      );
+      showToast("Welcome back to BitMart! 👋", "success");
 
       navigate("/");
     } catch (error) {
       console.error("Google login error:", error);
 
       showToast(
-        error.message ||
-          "Google login failed. Please try again.",
+        error.message || "Google login failed. Please try again.",
         "error"
       );
     } finally {
@@ -97,149 +81,245 @@ export const LoginPage = () => {
   };
 
   return (
-    <div className="w-full min-h-[calc(100vh-80px)] flex items-center justify-center px-4 py-8">
+    <div className="min-h-[calc(100vh-64px)] bg-[#f7f6f2] px-4 py-8 sm:py-10 dark:bg-[#111614]">
+      <div className="mx-auto max-w-5xl">
 
-      <div className="w-full max-w-5xl bg-white dark:bg-slate-900 rounded-3xl shadow-xl overflow-hidden">
+        {/* BACK */}
+        <Link
+          to="/"
+          className="mb-5 inline-flex items-center gap-2 text-sm font-medium text-[#77746d] transition-colors hover:text-[#176b5b] dark:text-[#929b95] dark:hover:text-[#3faf91]"
+        >
+          <ArrowLeft className="h-4 w-4" />
+          Back to marketplace
+        </Link>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2">
+        {/* MAIN CARD */}
+        <div className="overflow-hidden rounded-2xl border border-[#dedbd3] bg-white shadow-sm dark:border-[#303a35] dark:bg-[#18201d]">
 
-          {/* =========================
-              LEFT SIDE
-          ========================= */}
+          <div className="grid grid-cols-1 lg:grid-cols-2">
 
-          <div className="bg-gradient-to-br from-blue-600 via-blue-700 to-indigo-800 p-8 sm:p-12 text-white flex flex-col justify-between">
+            {/* =========================================
+                LEFT SIDE
+            ========================================= */}
 
-            <div className="space-y-6">
+            <div className="flex flex-col justify-between border-b border-[#e5e2da] bg-[#eeece6] p-8 sm:p-10 lg:border-b-0 lg:border-r dark:border-[#303a35] dark:bg-[#151c19]">
 
-              <Link
-                to="/"
-                className="inline-flex items-center gap-2.5"
-              >
-                <div className="w-10 h-10 rounded-xl bg-white text-blue-600 flex items-center justify-center shadow-lg">
-                  <Building2 className="w-6 h-6" />
-                </div>
+              <div>
 
-                <span className="font-extrabold text-2xl">
-                  BitMart
-                </span>
-              </Link>
+                {/* BRAND */}
 
-              <div className="space-y-2 pt-4">
+                <Link
+                  to="/"
+                  className="inline-flex items-center gap-3"
+                >
+                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-[#176b5b] text-white shadow-sm">
+                    <span className="text-lg font-bold">
+                      B
+                    </span>
+                  </div>
 
-                <h2 className="text-3xl font-extrabold tracking-tight">
-                  Exclusive Marketplace for College Students
-                </h2>
+                  <div className="leading-none">
+                    <span className="text-xl font-bold tracking-tight text-[#171717] dark:text-[#f3f4f1]">
+                      BIT
+                      <span className="text-[#176b5b] dark:text-[#3faf91]">
+                        Mart
+                      </span>
+                    </span>
 
-                <p className="text-blue-100 text-sm leading-relaxed">
-                  Connect directly with hostel mates to buy and sell
-                  textbooks, electronics, and room gear effortlessly.
-                </p>
+                    <span className="mt-1 block text-[10px] font-medium text-[#77746d] dark:text-[#8f9993]">
+                      BIT Mesra Marketplace
+                    </span>
+                  </div>
+                </Link>
 
-              </div>
 
-            </div>
+                {/* HERO COPY */}
 
-            <div className="my-8">
+                <div className="mt-12 max-w-md">
 
-              <img
-                src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&q=80&w=800"
-                alt="Campus Students"
-                className="w-full h-48 object-cover rounded-2xl border border-white/20 shadow-xl"
-              />
+                  <div className="mb-4 flex items-center gap-2 text-xs font-bold uppercase tracking-[0.12em] text-[#176b5b] dark:text-[#3faf91]">
+                    <span className="h-1.5 w-1.5 rounded-full bg-[#176b5b] dark:bg-[#3faf91]" />
+                    Student marketplace
+                  </div>
 
-            </div>
+                  <h1 className="text-3xl font-bold leading-[1.15] tracking-tight text-[#171717] sm:text-4xl dark:text-[#f3f4f1]">
+                    Your campus.
+                    <br />
+                    Your marketplace.
+                  </h1>
 
-            <div className="flex items-center gap-2 text-xs text-blue-200 font-medium">
-
-              <ShieldCheck className="w-4 h-4 text-emerald-400" />
-
-              <span>
-                Secure Student Authentication
-              </span>
-
-            </div>
-
-          </div>
-
-          {/* =========================
-              RIGHT SIDE
-          ========================= */}
-
-          <div className="p-8 sm:p-12 flex flex-col justify-center">
-
-            <div className="w-full max-w-md mx-auto space-y-7">
-
-              <div className="text-center space-y-2">
-
-                <div className="w-14 h-14 rounded-2xl bg-blue-100 dark:bg-blue-950/50 text-blue-600 dark:text-blue-400 flex items-center justify-center mx-auto">
-
-                  <LogIn className="w-7 h-7" />
+                  <p className="mt-5 max-w-lg text-sm leading-7 text-[#6b6963] sm:text-base dark:text-[#a8afa9]">
+                    Buy and sell textbooks, electronics, cycles, hostel
+                    essentials and more — directly with students at BIT Mesra.
+                  </p>
 
                 </div>
 
-                <h3 className="text-2xl font-bold text-gray-900 dark:text-white">
-                  Welcome Back
-                </h3>
 
-                <p className="text-sm text-gray-500 dark:text-gray-400">
-                  Sign in securely using your BIT Mesra Google account.
-                </p>
+                {/* IMAGE */}
 
-              </div>
-
-              {/* GOOGLE LOGIN */}
-
-              <div className="flex justify-center">
-
-                <GoogleLogin
-                  onSuccess={handleGoogleLogin}
-                  onError={() => {
-                    showToast(
-                      "Google login failed.",
-                      "error"
-                    );
-                  }}
-                  useOneTap={false}
-                  theme="outline"
-                  size="large"
-                  text="continue_with"
-                  shape="rectangular"
-                  width="100%"
-                />
+                <div className="mt-9 overflow-hidden rounded-xl border border-[#d8d5cd] bg-[#e5e2da] dark:border-[#35403a] dark:bg-[#202a26]">
+                  <img
+                    src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&q=80&w=1000"
+                    alt="College students"
+                    className="h-48 w-full object-cover"
+                  />
+                </div>
 
               </div>
 
-              {googleLoading && (
-                <p className="text-center text-xs text-gray-500 dark:text-gray-400">
-                  Signing in with Google...
-                </p>
-              )}
 
-              {/* SECURITY MESSAGE */}
+              {/* TRUST */}
 
-              <div className="p-4 bg-blue-50 dark:bg-blue-950/40 rounded-xl border border-blue-200 dark:border-blue-900 text-xs text-blue-900 dark:text-blue-300 flex items-start gap-2">
+              <div className="mt-8 flex items-start gap-3 border-t border-[#d8d5cd] pt-5 dark:border-[#303a35]">
 
-                <ShieldCheck className="w-4 h-4 text-blue-600 shrink-0 mt-0.5" />
+                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#dfece8] text-[#176b5b] dark:bg-[#183b32] dark:text-[#3faf91]">
+                  <ShieldCheck className="h-4 w-4" />
+                </div>
 
-                <span>
-                  Only verified <strong>@bitmesra.ac.in</strong> Google
-                  accounts can access BitMart.
-                </span>
+                <div>
+                  <p className="text-xs font-bold text-[#363431] dark:text-[#e5e8e5]">
+                    Secure student access
+                  </p>
+
+                  <p className="mt-1 text-[11px] leading-5 text-[#77746d] dark:text-[#8f9993]">
+                    BitMart is restricted to verified BIT Mesra student
+                    accounts.
+                  </p>
+                </div>
 
               </div>
 
-              {/* REGISTER */}
+            </div>
 
-              <div className="pt-2 text-center text-xs text-gray-500 dark:text-gray-400">
 
-                Don't have an account yet?{" "}
+            {/* =========================================
+                RIGHT SIDE
+            ========================================= */}
+
+            <div className="flex items-center justify-center p-8 sm:p-12">
+
+              <div className="w-full max-w-md">
+
+                {/* HEADER */}
+
+                <div className="text-center">
+
+                  <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-xl bg-[#e4efeb] text-[#176b5b] dark:bg-[#183b32] dark:text-[#3faf91]">
+                    <LogIn className="h-5 w-5" />
+                  </div>
+
+                  <h2 className="mt-5 text-2xl font-bold tracking-tight text-[#171717] dark:text-[#f3f4f1]">
+                    Welcome back
+                  </h2>
+
+                  <p className="mx-auto mt-2 max-w-sm text-sm leading-6 text-[#77746d] dark:text-[#929b95]">
+                    Sign in with your BIT Mesra Google account to continue.
+                  </p>
+
+                </div>
+
+
+                {/* GOOGLE LOGIN */}
+
+                <div className="mt-8 flex w-full justify-center">
+
+                  <div className="flex w-full justify-center">
+
+                    <GoogleLogin
+                      onSuccess={handleGoogleLogin}
+                      onError={() => {
+                        showToast(
+                          "Google login failed.",
+                          "error"
+                        );
+                      }}
+                      useOneTap={false}
+                      theme="outline"
+                      size="large"
+                      text="continue_with"
+                      shape="rectangular"
+                    />
+
+                  </div>
+
+                </div>
+
+
+                {/* LOADING */}
+
+                {googleLoading && (
+                  <div className="mt-4 flex items-center justify-center gap-2 text-xs font-medium text-[#77746d] dark:text-[#929b95]">
+
+                    <span className="h-3.5 w-3.5 animate-spin rounded-full border-2 border-[#d6d3cb] border-t-[#176b5b] dark:border-[#35403a] dark:border-t-[#3faf91]" />
+
+                    Signing you in...
+
+                  </div>
+                )}
+
+
+                {/* SECURITY BOX */}
+
+                <div className="mt-7 rounded-xl border border-[#cfe1db] bg-[#f0f6f3] p-4 dark:border-[#285448] dark:bg-[#15332c]">
+
+                  <div className="flex items-start gap-3">
+
+                    <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-[#176b5b] dark:text-[#3faf91]" />
+
+                    <div>
+
+                      <p className="text-xs font-bold text-[#285c50] dark:text-[#8bd1bd]">
+                        BIT Mesra accounts only
+                      </p>
+
+                      <p className="mt-1 text-xs leading-5 text-[#58736b] dark:text-[#9db9b1]">
+                        Only verified{" "}
+                        <strong className="font-semibold text-[#176b5b] dark:text-[#8bd1bd]">
+                          @bitmesra.ac.in
+                        </strong>{" "}
+                        Google accounts can access BitMart.
+                      </p>
+
+                    </div>
+
+                  </div>
+
+                </div>
+
+
+                {/* DIVIDER */}
+
+                <div className="my-7 flex items-center gap-3">
+
+                  <div className="h-px flex-1 bg-[#e5e2da] dark:bg-[#303a35]" />
+
+                  <span className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#aaa69e]">
+                    New here?
+                  </span>
+
+                  <div className="h-px flex-1 bg-[#e5e2da] dark:bg-[#303a35]" />
+
+                </div>
+
+
+                {/* REGISTER */}
 
                 <Link
                   to="/register"
-                  className="font-bold text-blue-600 dark:text-blue-400 hover:underline"
+                  className="flex h-11 w-full items-center justify-center gap-2 rounded-lg border border-[#d6d3cb] bg-white text-sm font-semibold text-[#363431] transition-colors hover:border-[#176b5b] hover:text-[#176b5b] dark:border-[#35403a] dark:bg-[#18201d] dark:text-[#e5e8e5] dark:hover:border-[#3faf91] dark:hover:text-[#3faf91]"
                 >
+                  <Building2 className="h-4 w-4" />
                   Create College Account
                 </Link>
+
+
+                {/* FOOTNOTE */}
+
+                <p className="mt-5 text-center text-[11px] leading-5 text-[#99968f] dark:text-[#747e78]">
+                  By continuing, you agree to use BitMart responsibly and
+                  follow campus marketplace guidelines.
+                </p>
 
               </div>
 
@@ -250,7 +330,6 @@ export const LoginPage = () => {
         </div>
 
       </div>
-
     </div>
   );
 };

@@ -33,10 +33,7 @@ export const ProfileCompletionPage = () => {
   try {
     googleUser = savedUser ? JSON.parse(savedUser) : null;
   } catch (error) {
-    console.error(
-      "Error reading profile completion user:",
-      error
-    );
+    console.error("Error reading profile completion user:", error);
   }
 
   const [phone, setPhone] = useState("");
@@ -46,39 +43,35 @@ export const ProfileCompletionPage = () => {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  // ==========================================
-  // NO PROFILE COMPLETION SESSION
-  // ==========================================
-
   if (!profileToken || !googleUser) {
     return (
-      <div className="w-full max-w-xl mx-auto bg-white dark:bg-slate-900 rounded-3xl shadow-xl p-8 sm:p-12 text-center">
-        <div className="w-16 h-16 rounded-full bg-rose-100 dark:bg-rose-950/40 flex items-center justify-center mx-auto mb-6">
-          <ShieldCheck className="w-8 h-8 text-rose-600" />
+      <div className="min-h-[calc(100vh-64px)] w-full bg-[#f5f3ee] px-4 py-10 sm:py-14 dark:bg-[#0f1512]">
+        <div className="mx-auto w-full max-w-xl">
+          <div className="rounded-3xl border border-[#e3e0d8] bg-white p-8 text-center shadow-sm sm:p-12 dark:border-[#303a35] dark:bg-[#18201d]">
+            <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-2xl bg-rose-50 text-rose-600 dark:bg-rose-950/40 dark:text-rose-400">
+              <ShieldCheck className="h-8 w-8" />
+            </div>
+
+            <h2 className="mb-3 text-2xl font-extrabold tracking-tight text-[#222220] dark:text-white">
+              Profile Completion Session Expired
+            </h2>
+
+            <p className="mb-7 text-sm leading-relaxed text-[#77746d] dark:text-[#929b95]">
+              Please start registration again using your Google account.
+            </p>
+
+            <Button
+              variant="primary"
+              onClick={() => navigate("/register")}
+              icon={ShieldCheck}
+            >
+              Continue with Google
+            </Button>
+          </div>
         </div>
-
-        <h2 className="text-2xl font-extrabold text-gray-900 dark:text-white mb-3">
-          Profile Completion Session Expired
-        </h2>
-
-        <p className="text-sm text-gray-600 dark:text-gray-400 mb-6">
-          Please start registration again using your Google
-          account.
-        </p>
-
-        <Button
-          variant="primary"
-          onClick={() => navigate("/register")}
-        >
-          Continue with Google
-        </Button>
       </div>
     );
   }
-
-  // ==========================================
-  // PHONE CHANGE
-  // ==========================================
 
   const handlePhoneChange = (e) => {
     const value = e.target.value
@@ -91,10 +84,6 @@ export const ProfileCompletionPage = () => {
       setError("");
     }
   };
-
-  // ==========================================
-  // COMPLETE PROFILE
-  // ==========================================
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -144,13 +133,8 @@ export const ProfileCompletionPage = () => {
         );
       }
 
-      // ==========================================
-      // SAVE FINAL AUTHENTICATION
-      // ==========================================
-
       login(data.user, data.token);
 
-      // Remove temporary registration data
       localStorage.removeItem(
         "BitMart_profile_completion_token"
       );
@@ -166,10 +150,7 @@ export const ProfileCompletionPage = () => {
 
       navigate("/");
     } catch (error) {
-      console.error(
-        "Profile completion error:",
-        error
-      );
+      console.error("Profile completion error:", error);
 
       showToast(
         error.message ||
@@ -206,148 +187,188 @@ export const ProfileCompletionPage = () => {
   };
 
   return (
-    <div className="w-full max-w-2xl mx-auto bg-white dark:bg-slate-900 rounded-3xl shadow-xl p-8 sm:p-12">
-      {/* HEADER */}
+    <div className="min-h-[calc(100vh-64px)] w-full bg-[#f5f3ee] px-4 py-10 sm:py-14 dark:bg-[#0f1512]">
+      <div className="mx-auto w-full max-w-2xl">
 
-      <div className="text-center space-y-3 mb-8">
-        <div className="w-14 h-14 rounded-2xl bg-blue-600 text-white flex items-center justify-center mx-auto shadow-md shadow-blue-500/30">
-          <CheckCircle2 className="w-7 h-7" />
-        </div>
+        <div className="overflow-hidden rounded-3xl border border-[#e3e0d8] bg-white shadow-sm dark:border-[#303a35] dark:bg-[#18201d]">
 
-        <h2 className="text-2xl sm:text-3xl font-extrabold text-gray-900 dark:text-white">
-          Complete Your Profile
-        </h2>
+          {/* HEADER */}
+          <div className="px-6 pt-8 text-center sm:px-10 sm:pt-10">
 
-        <p className="text-sm text-gray-500 dark:text-gray-400 max-w-md mx-auto">
-          One last step! Add your phone number and hostel to
-          complete your BitMart registration.
-        </p>
-      </div>
-
-      {/* GOOGLE USER INFO */}
-
-      <div className="mb-6 p-4 rounded-2xl bg-gray-50 dark:bg-slate-800/60 border border-gray-200 dark:border-slate-700">
-        <div className="flex items-center gap-4">
-          {googleUser?.profilePicture ? (
-            <img
-              src={googleUser.profilePicture}
-              alt="Profile"
-              className="w-12 h-12 rounded-full object-cover"
-            />
-          ) : (
-            <div className="w-12 h-12 rounded-full bg-blue-100 dark:bg-blue-950/50 flex items-center justify-center">
-              <User className="w-6 h-6 text-blue-600" />
+            <div className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-[#e8f3ef] text-[#176b5b] dark:bg-[#123b32] dark:text-[#3faf91]">
+              <CheckCircle2 className="h-7 w-7" />
             </div>
-          )}
 
-          <div className="min-w-0">
-            <p className="font-bold text-gray-900 dark:text-white truncate">
-              {googleUser?.name || "Google User"}
+            <h2 className="text-2xl font-extrabold tracking-tight text-[#222220] sm:text-3xl dark:text-white">
+              Complete Your Profile
+            </h2>
+
+            <p className="mx-auto mt-2 max-w-md text-sm leading-relaxed text-[#77746d] dark:text-[#929b95]">
+              One last step. Add your phone number and hostel
+              to complete your BitMart registration.
             </p>
 
-            <p className="text-sm text-gray-500 dark:text-gray-400 flex items-center gap-1.5 truncate">
-              <Mail className="w-3.5 h-3.5 shrink-0" />
-              {googleUser?.email || "Google account"}
-            </p>
+          </div>
+
+          {/* CONTENT */}
+          <div className="px-6 pb-8 pt-7 sm:px-10 sm:pb-10">
+
+            {/* GOOGLE ACCOUNT */}
+            <div className="mb-6 rounded-2xl border border-[#e3e0d8] bg-[#f7f6f2] p-4 dark:border-[#303a35] dark:bg-[#202a26]">
+
+              <div className="flex items-center gap-4">
+
+                {googleUser?.profilePicture ? (
+                  <img
+                    src={googleUser.profilePicture}
+                    alt="Profile"
+                    className="h-12 w-12 shrink-0 rounded-full object-cover ring-2 ring-[#d8e9e3] dark:ring-[#31574e]"
+                  />
+                ) : (
+                  <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-[#e8f3ef] text-[#176b5b] dark:bg-[#123b32] dark:text-[#3faf91]">
+                    <User className="h-6 w-6" />
+                  </div>
+                )}
+
+                <div className="min-w-0">
+                  <p className="truncate text-sm font-bold text-[#222220] dark:text-white">
+                    {googleUser?.name || "Google User"}
+                  </p>
+
+                  <p className="mt-1 flex items-center gap-1.5 truncate text-xs text-[#77746d] dark:text-[#929b95]">
+                    <Mail className="h-3.5 w-3.5 shrink-0" />
+                    {googleUser?.email || "Google account"}
+                  </p>
+                </div>
+
+                <div className="ml-auto hidden shrink-0 sm:block">
+                  <span className="inline-flex items-center gap-1.5 rounded-full border border-[#cfe5dc] bg-[#edf7f3] px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-[#176b5b] dark:border-[#28594c] dark:bg-[#123b32] dark:text-[#3faf91]">
+                    <ShieldCheck className="h-3 w-3" />
+                    Verified
+                  </span>
+                </div>
+
+              </div>
+            </div>
+
+            {/* FORM */}
+            <form
+              onSubmit={handleSubmit}
+              className="space-y-5"
+            >
+
+              <Input
+                label="Phone Number (WhatsApp)"
+                name="phone"
+                type="tel"
+                inputMode="numeric"
+                maxLength={10}
+                placeholder="9876543210"
+                icon={Phone}
+                value={phone}
+                onChange={handlePhoneChange}
+                error={
+                  error && !/^\d{10}$/.test(phone)
+                    ? error
+                    : ""
+                }
+                required
+              />
+
+              {/* HOSTEL */}
+              <div className="flex flex-col space-y-1.5">
+
+                <label className="text-xs font-semibold uppercase tracking-wider text-[#4b4b47] dark:text-[#c6ccc8]">
+                  Hostel / Residence{" "}
+                  <span className="text-rose-500">*</span>
+                </label>
+
+                <div className="relative">
+
+                  <Building className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[#99968f]" />
+
+                  <select
+                    name="hostel"
+                    value={hostel}
+                    onChange={(e) => {
+                      setHostel(e.target.value);
+
+                      if (error) {
+                        setError("");
+                      }
+                    }}
+                    className="h-11 w-full appearance-none rounded-xl border border-[#d8d5cc] bg-white pl-11 pr-4 text-sm text-[#222220] outline-none transition-colors focus:border-[#176b5b] focus:ring-2 focus:ring-[#176b5b]/10 dark:border-[#39443f] dark:bg-[#202a26] dark:text-white dark:focus:border-[#3faf91] dark:focus:ring-[#3faf91]/10"
+                    required
+                  >
+                    {HOSTELS.filter(
+                      (hostelName) =>
+                        hostelName !== "All Hostels"
+                    ).map((hostelName) => (
+                      <option
+                        key={hostelName}
+                        value={hostelName}
+                      >
+                        {hostelName}
+                      </option>
+                    ))}
+                  </select>
+
+                </div>
+              </div>
+
+              {/* ERROR */}
+              {error && (
+                <div className="rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700 dark:border-rose-900/60 dark:bg-rose-950/30 dark:text-rose-400">
+                  {error}
+                </div>
+              )}
+
+              {/* SECURITY INFO */}
+              <div className="flex items-start gap-3 rounded-2xl border border-[#cfe5dc] bg-[#edf7f3] p-4 text-xs text-[#31574e] dark:border-[#28594c] dark:bg-[#123b32] dark:text-[#b5d8cd]">
+
+                <ShieldCheck className="mt-0.5 h-5 w-5 shrink-0 text-[#176b5b] dark:text-[#3faf91]" />
+
+                <div>
+                  <p className="mb-1 font-bold text-[#176b5b] dark:text-[#3faf91]">
+                    Your Google account is verified
+                  </p>
+
+                  <p className="leading-relaxed">
+                    Your name and email were obtained directly
+                    from Google. Your phone number and hostel
+                    are required to complete your BitMart profile.
+                  </p>
+                </div>
+
+              </div>
+
+              {/* SUBMIT */}
+              <Button
+                type="submit"
+                variant="primary"
+                size="lg"
+                fullWidth
+                disabled={loading}
+                icon={CheckCircle2}
+                className="!border-[#176b5b] !bg-[#176b5b] !text-white hover:!bg-[#125849] focus:!ring-[#176b5b]/30 py-3 font-bold text-base"
+              >
+                {loading
+                  ? "Completing Profile..."
+                  : "Complete Registration"}
+              </Button>
+
+            </form>
+
+            <div className="mt-6 text-center">
+              <p className="text-[11px] leading-relaxed text-[#99968f] dark:text-[#747e78]">
+                Your information is used only to help students
+                connect safely within the BitMart campus marketplace.
+              </p>
+            </div>
+
           </div>
         </div>
       </div>
-
-      {/* FORM */}
-
-      <form
-        onSubmit={handleSubmit}
-        className="space-y-5"
-      >
-        <Input
-          label="Phone Number (WhatsApp)"
-          name="phone"
-          type="tel"
-          inputMode="numeric"
-          maxLength={10}
-          placeholder="9876543210"
-          icon={Phone}
-          value={phone}
-          onChange={handlePhoneChange}
-          error={error && !/^\d{10}$/.test(phone) ? error : ""}
-          required
-        />
-
-        <div className="flex flex-col space-y-1.5">
-          <label className="text-xs font-semibold uppercase tracking-wider text-gray-700 dark:text-gray-300">
-            Hostel / Residence{" "}
-            <span className="text-rose-500">*</span>
-          </label>
-
-          <div className="relative">
-            <Building className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
-
-            <select
-              name="hostel"
-              value={hostel}
-              onChange={(e) => {
-                setHostel(e.target.value);
-
-                if (error) {
-                  setError("");
-                }
-              }}
-              className="w-full py-2.5 pl-11 pr-4 rounded-xl border border-gray-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-gray-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-              required
-            >
-              {HOSTELS.filter(
-                (hostelName) =>
-                  hostelName !== "All Hostels"
-              ).map((hostelName) => (
-                <option
-                  key={hostelName}
-                  value={hostelName}
-                >
-                  {hostelName}
-                </option>
-              ))}
-            </select>
-          </div>
-        </div>
-
-        {error && (
-          <p className="text-sm text-rose-600 dark:text-rose-400">
-            {error}
-          </p>
-        )}
-
-        {/* SECURITY INFO */}
-
-        <div className="p-4 bg-blue-50 dark:bg-blue-950/40 rounded-xl border border-blue-200 dark:border-blue-900 text-xs text-blue-900 dark:text-blue-300 flex items-start gap-3">
-          <ShieldCheck className="w-5 h-5 text-blue-600 shrink-0 mt-0.5" />
-
-          <div>
-            <p className="font-semibold mb-1">
-              Your Google account is verified
-            </p>
-
-            <p>
-              Your name and email were obtained directly from
-              Google. Your phone number and hostel are required
-              to complete your BitMart profile.
-            </p>
-          </div>
-        </div>
-
-        <Button
-          type="submit"
-          variant="primary"
-          size="lg"
-          fullWidth
-          disabled={loading}
-          icon={CheckCircle2}
-          className="py-3 font-bold text-base"
-        >
-          {loading
-            ? "Completing Profile..."
-            : "Complete Registration"}
-        </Button>
-      </form>
     </div>
   );
 };

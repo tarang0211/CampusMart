@@ -5,7 +5,7 @@ import { Heart, MapPin, Clock } from 'lucide-react';
 import {
   formatCurrency,
   formatTimeAgo,
-  getConditionBadge
+  getConditionBadge,
 } from '../../utils/formatters';
 
 import { useWishlist } from '../../context/WishlistContext';
@@ -34,15 +34,12 @@ export const ProductCard = ({ product }) => {
   };
 
   return (
-    <div className="group bg-white dark:bg-slate-900 rounded-2xl border border-gray-200/80 dark:border-slate-800 shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden flex flex-col">
+    <article className="group overflow-hidden rounded-lg border border-[#e3e0d8] bg-white transition-colors duration-200 hover:border-[#c8c4ba] dark:border-[#2a342f] dark:bg-[#111b18] dark:hover:border-[#3b4842]">
 
-      {/* =========================
-          PRODUCT IMAGE
-      ========================= */}
-
+      {/* IMAGE */}
       <Link
         to={`/product/${product.id}`}
-        className="relative block aspect-[4/3] w-full overflow-hidden bg-gray-100 dark:bg-slate-800"
+        className="relative block aspect-[4/3] overflow-hidden bg-[#eeece6] dark:bg-[#202a26]"
       >
         <img
           src={
@@ -50,146 +47,122 @@ export const ProductCard = ({ product }) => {
             'https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?auto=format&fit=crop&q=80&w=800'
           }
           alt={product.title}
-          className={`w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ${
+          loading="lazy"
+          className={`h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.025] ${
             product.isSold ? 'opacity-50 grayscale' : ''
           }`}
-          loading="lazy"
         />
 
-        {/* =========================
-            SOLD OVERLAY
-        ========================= */}
-
+        {/* SOLD */}
         {product.isSold && (
-          <div className="absolute inset-0 bg-slate-900/60 backdrop-blur-[2px] flex items-center justify-center">
-            <span className="bg-rose-600 text-white font-extrabold uppercase text-xs tracking-widest px-4 py-1.5 rounded-full shadow-lg transform -rotate-6">
-              SOLD OUT
+          <div className="absolute inset-0 flex items-center justify-center bg-black/45">
+            <span className="rounded-md bg-[#171717] px-3 py-1.5 text-[11px] font-bold uppercase tracking-wide text-white">
+              Sold
             </span>
           </div>
         )}
 
-        {/* =========================
-            FEATURED BADGE
-        ========================= */}
-
-        {product.featured && !product.isSold && (
-          <div className="absolute top-3 left-3 bg-gradient-to-r from-amber-500 to-orange-500 text-white text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full shadow-md">
-            Featured
-          </div>
+        {/* WISHLIST */}
+        {!product.isSold && (
+          <button
+            type="button"
+            onClick={handleWishlistClick}
+            className={`absolute right-3 top-3 flex h-9 w-9 items-center justify-center rounded-full border transition-colors duration-150 ${
+              wishlisted
+                ? 'border-[#c95c55] bg-[#c95c55] text-white'
+                : 'border-white/70 bg-white/95 text-[#4b4b47] hover:border-white hover:text-[#c95c55] dark:border-[#35403a] dark:bg-[#18201d]/95 dark:text-[#d0d6d3] dark:hover:border-[#46534d] dark:hover:text-[#e47770]'
+            }`}
+            title={
+              wishlisted
+                ? 'Remove from Wishlist'
+                : 'Add to Wishlist'
+            }
+            aria-label={
+              wishlisted
+                ? 'Remove from Wishlist'
+                : 'Add to Wishlist'
+            }
+          >
+            <Heart
+              className={`h-4 w-4 ${
+                wishlisted ? 'fill-current' : ''
+              }`}
+            />
+          </button>
         )}
 
-        {/* =========================
-            CATEGORY
-        ========================= */}
-
-        <div className="absolute bottom-3 left-3 bg-slate-900/75 backdrop-blur-md text-white text-[11px] font-medium px-2.5 py-0.5 rounded-lg">
-          {product.category}
-        </div>
-
-        {/* =========================
-            WISHLIST
-        ========================= */}
-
-        <button
-          onClick={handleWishlistClick}
-          className={`absolute top-3 right-3 p-2 rounded-full backdrop-blur-md transition-transform active:scale-90 ${
-            wishlisted
-              ? 'bg-rose-500 text-white shadow-md shadow-rose-500/40'
-              : 'bg-white/80 dark:bg-slate-900/80 text-gray-700 dark:text-gray-200 hover:bg-white hover:text-rose-500'
-          }`}
-          title={
-            wishlisted
-              ? 'Remove from Wishlist'
-              : 'Add to Wishlist'
-          }
-        >
-          <Heart
-            className={`w-4 h-4 ${
-              wishlisted ? 'fill-white' : ''
-            }`}
-          />
-        </button>
+        {/* FEATURED */}
+        {product.featured && !product.isSold && (
+          <span className="absolute bottom-3 left-3 rounded-md bg-[#176b5b] px-2 py-1 text-[10px] font-bold uppercase tracking-wide text-white dark:bg-[#2f8c76]">
+            Featured
+          </span>
+        )}
       </Link>
 
-      {/* =========================
-          PRODUCT INFORMATION
-      ========================= */}
+      {/* DETAILS */}
+      <div className="p-4">
 
-      <div className="p-4 flex flex-col flex-1 justify-between space-y-3">
+        {/* LOCATION + CONDITION */}
+        <div className="mb-2.5 flex items-center justify-between gap-2">
 
-        <div className="space-y-1.5">
+          <span className="flex min-w-0 items-center gap-1.5 text-xs text-[#77746d] dark:text-[#929b95]">
+            <MapPin className="h-3.5 w-3.5 shrink-0 text-[#176b5b] dark:text-[#3faf91]" />
 
-          {/* Hostel + Condition */}
-
-          <div className="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400 gap-2">
-
-            <span className="flex items-center gap-1 font-medium truncate text-gray-600 dark:text-gray-300">
-
-              <MapPin className="w-3.5 h-3.5 text-blue-500 shrink-0" />
-
-              <span className="truncate">
-                {product.hostel || 'Hostel not specified'}
-              </span>
-
+            <span className="truncate">
+              {product.hostel || 'Hostel not specified'}
             </span>
+          </span>
 
+          {product.condition && (
             <span
-              className={`px-2 py-0.5 rounded-md border text-[10px] font-bold shrink-0 ${getConditionBadge(
+              className={`shrink-0 rounded px-1.5 py-0.5 text-[10px] font-semibold ${getConditionBadge(
                 product.condition
               )}`}
             >
               {product.condition}
             </span>
-
-          </div>
-
-          {/* Product Title */}
-
-          <Link
-            to={`/product/${product.id}`}
-            className="block"
-          >
-            <h3 className="font-semibold text-gray-900 dark:text-white text-base line-clamp-2 hover:text-blue-600 dark:hover:text-blue-400 transition-colors leading-snug">
-              {product.title}
-            </h3>
-          </Link>
+          )}
 
         </div>
 
-        {/* =========================
-            PRICE + TIME
-        ========================= */}
+        {/* TITLE */}
+        <Link to={`/product/${product.id}`}>
+          <h3 className="line-clamp-2 min-h-[2.75rem] text-[15px] font-semibold leading-5 text-[#222220] transition-colors group-hover:text-[#176b5b] dark:text-[#f3f4f1] dark:group-hover:text-[#3faf91]">
+            {product.title}
+          </h3>
+        </Link>
 
-        <div className="pt-2 border-t border-gray-100 dark:border-slate-800 flex items-center justify-between">
+        {/* PRICE + TIME */}
+        <div className="mt-4 flex items-end justify-between gap-3">
 
-          <div className="flex items-baseline gap-1.5">
+          <div className="min-w-0">
 
-            <span className="text-lg font-extrabold text-blue-600 dark:text-blue-400">
-              {formatCurrency(product.price)}
-            </span>
+            <div className="flex items-baseline gap-2">
 
-            {product.originalPrice && (
-              <span className="text-xs text-gray-400 line-through">
-                {formatCurrency(product.originalPrice)}
+              <span className="text-lg font-bold text-[#176b5b] dark:text-[#3faf91]">
+                {formatCurrency(product.price)}
               </span>
-            )}
+
+              {product.originalPrice && (
+                <span className="text-xs text-[#99968f] line-through">
+                  {formatCurrency(product.originalPrice)}
+                </span>
+              )}
+
+            </div>
 
           </div>
 
-          <div className="flex items-center gap-1 text-[11px] text-gray-400 font-medium">
-
-            <Clock className="w-3 h-3" />
-
+          <div className="flex shrink-0 items-center gap-1 text-[11px] text-[#99968f] dark:text-[#747e78]">
+            <Clock className="h-3 w-3" />
             <span>
               {formatTimeAgo(product.postedTime)}
             </span>
-
           </div>
 
         </div>
 
       </div>
-
-    </div>
+    </article>
   );
 };

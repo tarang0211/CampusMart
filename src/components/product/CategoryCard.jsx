@@ -1,14 +1,14 @@
 import React from 'react';
-import { 
-  LayoutGrid, 
-  BookOpen, 
-  Laptop, 
-  Bike, 
-  Home, 
-  Armchair, 
-  PenTool, 
-  Shirt, 
-  MoreHorizontal 
+import {
+  LayoutGrid,
+  BookOpen,
+  Laptop,
+  Bike,
+  Home,
+  Armchair,
+  PenTool,
+  Shirt,
+  MoreHorizontal
 } from 'lucide-react';
 
 const ICON_MAP = {
@@ -28,17 +28,25 @@ export const CategoryCard = ({ category, isSelected, onClick }) => {
 
   return (
     <button
+      type="button"
       onClick={onClick}
-      className={`flex items-center gap-2.5 px-4 py-2.5 rounded-2xl border transition-all duration-200 cursor-pointer whitespace-nowrap shrink-0 text-sm font-semibold shadow-xs ${
+      className={`group flex min-w-[92px] shrink-0 flex-col items-center justify-center gap-2 rounded-lg border px-4 py-3 transition-colors duration-150 ${
         isSelected
-          ? 'bg-blue-600 text-white border-blue-600 shadow-md shadow-blue-500/20 scale-[1.02]'
-          : 'bg-white dark:bg-slate-900 text-gray-700 dark:text-gray-200 border-gray-200 dark:border-slate-800 hover:border-blue-400 dark:hover:border-blue-500 hover:bg-gray-50 dark:hover:bg-slate-800'
+          ? 'border-[#176b5b] bg-[#176b5b] text-white'
+          : 'border-[#e3e0d8] bg-white text-[#44403c] hover:border-[#b9d2ca] hover:bg-[#faf9f6] dark:border-[#303a35] dark:bg-[#18201d] dark:text-gray-200 dark:hover:border-[#3f6257] dark:hover:bg-[#1d2723]'
       }`}
     >
-      <div className={`p-1.5 rounded-xl ${isSelected ? 'bg-white/20 text-white' : category.color}`}>
-        <IconComponent className="w-4 h-4" />
-      </div>
-      <span>{category.label}</span>
+      <IconComponent
+        className={`h-5 w-5 transition-colors ${
+          isSelected
+            ? 'text-white'
+            : 'text-[#176b5b] dark:text-[#3faf91]'
+        }`}
+      />
+
+      <span className="text-xs font-semibold leading-none">
+        {category.label}
+      </span>
     </button>
   );
 };

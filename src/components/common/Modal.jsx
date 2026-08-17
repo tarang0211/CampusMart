@@ -7,7 +7,7 @@ export const Modal = ({
   onClose,
   title,
   children,
-  maxWidth = 'max-w-lg'
+  maxWidth = 'max-w-lg',
 }) => {
   useEffect(() => {
     const handleKeyDown = (e) => {
@@ -31,37 +31,37 @@ export const Modal = ({
 
   return createPortal(
     <div className="fixed inset-0 z-[9999] overflow-y-auto">
-      
-      <div className="min-h-full flex items-center justify-center p-4">
-        
+      <div className="flex min-h-full items-center justify-center p-4">
+
         {/* Backdrop */}
         <div
-          className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm animate-fade-in"
+          className="fixed inset-0 bg-[#07100d]/70 backdrop-blur-sm animate-fade-in"
           onClick={onClose}
         />
 
         {/* Modal */}
         <div
-          className={`relative w-full ${maxWidth} bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-gray-100 dark:border-slate-800 z-10 overflow-hidden animate-fade-in my-8`}
+          className={`relative z-10 my-8 w-full ${maxWidth} overflow-hidden rounded-2xl border border-[#e3e0d8] bg-white shadow-2xl animate-fade-in dark:border-[#2a342f] dark:bg-[#111b18]`}
           onClick={(e) => e.stopPropagation()}
         >
-          
+
           {/* Header */}
-          <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 dark:border-slate-800">
-            <h3 className="text-lg font-bold text-gray-900 dark:text-white">
+          <div className="flex items-center justify-between border-b border-[#ebe8e1] px-6 py-4 dark:border-[#2a342f]">
+            <h3 className="text-lg font-bold text-[#171717] dark:text-[#f3f4f1]">
               {title}
             </h3>
 
             <button
               onClick={onClose}
-              className="p-1 rounded-lg text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-slate-800 transition-colors"
+              className="rounded-lg p-1 text-[#99968f] transition-colors hover:bg-[#f1efe9] hover:text-[#363431] dark:text-[#7f8983] dark:hover:bg-[#18201d] dark:hover:text-[#f3f4f1]"
+              aria-label="Close modal"
             >
-              <X className="w-5 h-5" />
+              <X className="h-5 w-5" />
             </button>
           </div>
 
           {/* Content */}
-          <div className="p-6 max-h-[80vh] overflow-y-auto">
+          <div className="max-h-[80vh] overflow-y-auto p-6">
             {children}
           </div>
 

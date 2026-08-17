@@ -1,6 +1,12 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Upload, X, PlusCircle, IndianRupee, Sparkles } from "lucide-react";
+import {
+  Upload,
+  X,
+  PlusCircle,
+  IndianRupee,
+  Sparkles,
+} from "lucide-react";
 
 import { CATEGORIES, HOSTELS, CONDITIONS } from "../data/dummyData";
 
@@ -19,10 +25,6 @@ export const SellItemPage = () => {
   const { user } = useAuth();
   const { showToast } = useToast();
 
-  // ==========================================
-  // FORM DATA
-  // ==========================================
-
   const [formData, setFormData] = useState({
     title: "",
     price: "",
@@ -34,19 +36,11 @@ export const SellItemPage = () => {
     contactNumber: user?.phone || "",
   });
 
-  // ==========================================
-  // IMAGE STATES
-  // ==========================================
-
   const [selectedFiles, setSelectedFiles] = useState([]);
   const [imagePreviews, setImagePreviews] = useState([]);
 
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
-
-  // ==========================================
-  // INPUT CHANGE
-  // ==========================================
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -64,47 +58,39 @@ export const SellItemPage = () => {
     }
   };
 
-  // ==========================================
-  // IMAGE UPLOAD
-  // ==========================================
-
   const handleImageUpload = (e) => {
     const files = Array.from(e.target.files || []);
 
     if (files.length === 0) return;
 
-    // Maximum 5 images
     if (selectedFiles.length + files.length > 5) {
       showToast("You can upload a maximum of 5 images.", "error");
-
       e.target.value = "";
       return;
     }
 
-    // Only images
-    const invalidFile = files.find((file) => !file.type.startsWith("image/"));
+    const invalidFile = files.find(
+      (file) => !file.type.startsWith("image/")
+    );
 
     if (invalidFile) {
       showToast("Only image files are allowed.", "error");
-
       e.target.value = "";
       return;
     }
 
-    // Maximum 5MB per image
-    const largeFile = files.find((file) => file.size > 5 * 1024 * 1024);
+    const largeFile = files.find(
+      (file) => file.size > 5 * 1024 * 1024
+    );
 
     if (largeFile) {
       showToast("Each image must be smaller than 5MB.", "error");
-
       e.target.value = "";
       return;
     }
 
-    // Save actual files
     setSelectedFiles((prev) => [...prev, ...files]);
 
-    // Create previews
     files.forEach((file) => {
       const reader = new FileReader();
 
@@ -118,26 +104,18 @@ export const SellItemPage = () => {
     e.target.value = "";
   };
 
-  // ==========================================
-  // REMOVE IMAGE
-  // ==========================================
-
   const removeImage = (index) => {
-    setSelectedFiles((prev) => prev.filter((_, i) => i !== index));
+    setSelectedFiles((prev) =>
+      prev.filter((_, i) => i !== index)
+    );
 
-    setImagePreviews((prev) => prev.filter((_, i) => i !== index));
+    setImagePreviews((prev) =>
+      prev.filter((_, i) => i !== index)
+    );
   };
-
-  // ==========================================
-  // SUBMIT
-  // ==========================================
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    // ------------------------------
-    // VALIDATION
-    // ------------------------------
 
     const newErrors = {};
 
@@ -155,86 +133,53 @@ export const SellItemPage = () => {
 
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
-
       showToast("Please fix the errors in the form.", "error");
-
       return;
     }
 
     try {
       setIsSubmitting(true);
 
-      // ------------------------------
-      // GET TOKEN
-      // ------------------------------
-
       const token = localStorage.getItem("BitMart_token");
 
       if (!token) {
         showToast("Please login first.", "error");
-
         return;
       }
-
-      // ------------------------------
-      // CREATE FORMDATA
-      // ------------------------------
 
       const data = new FormData();
 
       data.append("title", formData.title.trim());
-
       data.append("description", formData.description.trim());
-
       data.append("price", Number(formData.price));
-
       data.append("category", formData.category);
-
       data.append("condition", formData.condition);
-
       data.append("hostel", formData.hostel);
-
       data.append("contactNumber", formData.contactNumber);
 
       if (formData.originalPrice) {
-        data.append("originalPrice", Number(formData.originalPrice));
+        data.append(
+          "originalPrice",
+          Number(formData.originalPrice)
+        );
       }
-
-      // ------------------------------
-      // ADD IMAGES
-      // ------------------------------
 
       selectedFiles.forEach((file) => {
         data.append("images", file);
       });
 
-      // ------------------------------
-      // DEBUG
-      // ------------------------------
-
       console.log("Submitting item...");
-
       console.log("Images selected:", selectedFiles.length);
-
-      // ------------------------------
-      // SEND TO BACKEND
-      // ------------------------------
 
       const response = await fetch(
         "https://bitmart-backend-r83h.onrender.com/api/items",
         {
           method: "POST",
-
           headers: {
             Authorization: `Bearer ${token}`,
           },
-
-          // IMPORTANT:
-          // Do NOT add Content-Type here.
-          // Browser automatically creates
-          // multipart/form-data boundary.
           body: data,
-        },
+        }
       );
 
       const result = await response.json();
@@ -242,41 +187,40 @@ export const SellItemPage = () => {
       console.log("Create item response:", result);
 
       if (!response.ok) {
-        throw new Error(result.message || "Failed to post item");
+        throw new Error(
+          result.message || "Failed to post item"
+        );
       }
-
-      // ------------------------------
-      // REFRESH PRODUCTS
-      // ------------------------------
 
       await fetchProducts();
 
-      showToast("Your item has been posted successfully!", "success");
-
-      // ------------------------------
-      // REDIRECT
-      // ------------------------------
+      showToast(
+        "Your item has been posted successfully!",
+        "success"
+      );
 
       navigate("/my-listings");
     } catch (error) {
       console.error("Error posting item:", error);
 
-      showToast(error.message || "Failed to post item", "error");
+      showToast(
+        error.message || "Failed to post item",
+        "error"
+      );
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  // ==========================================
-  // LIVE PREVIEW
-  // ==========================================
-
   const livePreviewProduct = {
     id: "preview",
 
-    title: formData.title || "Sample Item Title",
+    title:
+      formData.title || "Sample Item Title",
 
-    price: formData.price ? Number(formData.price) : 499,
+    price: formData.price
+      ? Number(formData.price)
+      : 499,
 
     originalPrice: formData.originalPrice
       ? Number(formData.originalPrice)
@@ -302,296 +246,341 @@ export const SellItemPage = () => {
           ],
 
     description:
-      formData.description || "Your item description will appear here.",
+      formData.description ||
+      "Your item description will appear here.",
 
     seller: user,
   };
 
-  // ==========================================
-  // JSX
-  // ==========================================
-
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8 animate-fade-in">
-      {/* HEADER */}
+    <div className="min-h-screen w-full bg-[#0c1411] text-[#eef3f0]">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8 animate-fade-in">
 
-      <div className="space-y-2 border-b border-gray-200 dark:border-slate-800 pb-6">
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 dark:bg-blue-950/50 text-blue-600 dark:text-blue-400 text-xs font-bold">
-          <Sparkles className="w-4 h-4" />
+        {/* HEADER */}
 
-          <span>Quick Campus Listing</span>
+        <div className="space-y-3 border-b border-[#26352f] pb-7">
+
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#16352d] border border-[#245247] text-[#45b89b] text-xs font-bold">
+            <Sparkles className="w-4 h-4" />
+            <span>Quick Campus Listing</span>
+          </div>
+
+          <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-[#f1f5f3]">
+            Sell an Item on BitMart
+          </h1>
+
+          <p className="text-sm sm:text-base text-[#91a19a] max-w-2xl leading-relaxed">
+            Fill out the details below to post your books,
+            gadgets, or hostel gear for students across campus.
+          </p>
+
         </div>
 
-        <h1 className="text-3xl font-extrabold text-gray-900 dark:text-white">
-          Sell an Item on BitMart
-        </h1>
+        {/* MAIN GRID */}
 
-        <p className="text-sm text-gray-500 dark:text-gray-400">
-          Fill out the details below to post your books, gadgets, or hostel gear
-          for students across campus.
-        </p>
-      </div>
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
 
-      {/* MAIN GRID */}
+          {/* FORM */}
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-        {/* =====================================
-            FORM
-        ====================================== */}
+          <form
+            onSubmit={handleSubmit}
+            className="lg:col-span-8 bg-[#121b18] rounded-3xl border border-[#26352f] p-6 sm:p-8 space-y-7 shadow-xl"
+          >
 
-        <form
-          onSubmit={handleSubmit}
-          className="lg:col-span-8 bg-white dark:bg-slate-900 rounded-3xl border border-gray-200/80 dark:border-slate-800 p-6 sm:p-8 space-y-6 shadow-sm"
-        >
-          {/* =====================================
-              IMAGES
-          ====================================== */}
+            {/* IMAGES */}
 
-          <div className="space-y-3">
-            <label className="text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300 block">
-              Upload Item Photos (Up to 5)
-            </label>
+            <div className="space-y-4">
 
-            <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
-              {/* PREVIEWS */}
+              <div>
+                <label className="text-xs font-bold uppercase tracking-wider text-[#c5d0cb] block">
+                  Upload Item Photos
+                </label>
 
-              {imagePreviews.map((img, idx) => (
-                <div
-                  key={idx}
-                  className="relative group aspect-square rounded-2xl overflow-hidden border border-gray-200 dark:border-slate-700 bg-gray-100 dark:bg-slate-800"
-                >
-                  <img
-                    src={img}
-                    alt={`Preview ${idx + 1}`}
-                    className="w-full h-full object-cover"
-                  />
+                <p className="text-xs text-[#71817a] mt-1">
+                  Add up to 5 clear photos of your item.
+                </p>
+              </div>
 
-                  <button
-                    type="button"
-                    onClick={() => removeImage(idx)}
-                    className="absolute top-1.5 right-1.5 p-1 rounded-full bg-rose-600 text-white shadow-md hover:bg-rose-700 transition-colors"
+              <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
+
+                {imagePreviews.map((img, idx) => (
+                  <div
+                    key={idx}
+                    className="relative group aspect-square rounded-2xl overflow-hidden border border-[#304039] bg-[#18221f]"
                   >
-                    <X className="w-3.5 h-3.5" />
-                  </button>
-                </div>
-              ))}
+                    <img
+                      src={img}
+                      alt={`Preview ${idx + 1}`}
+                      className="w-full h-full object-cover"
+                    />
 
-              {/* ADD PHOTO */}
+                    <button
+                      type="button"
+                      onClick={() => removeImage(idx)}
+                      className="absolute top-2 right-2 p-1.5 rounded-full bg-rose-600 text-white shadow-md hover:bg-rose-700 transition-colors"
+                    >
+                      <X className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                ))}
 
-              {imagePreviews.length < 5 && (
-                <label className="aspect-square rounded-2xl border-2 border-dashed border-gray-300 dark:border-slate-700 hover:border-blue-500 dark:hover:border-blue-400 flex flex-col items-center justify-center cursor-pointer bg-gray-50 dark:bg-slate-800/40 hover:bg-blue-50/50 dark:hover:bg-blue-950/20 transition-colors p-2 text-center">
-                  <Upload className="w-6 h-6 text-blue-500 mb-1" />
+                {imagePreviews.length < 5 && (
+                  <label className="aspect-square rounded-2xl border-2 border-dashed border-[#35463f] hover:border-[#3aaa91] flex flex-col items-center justify-center cursor-pointer bg-[#17211e] hover:bg-[#1b302a] transition-all p-2 text-center">
 
-                  <span className="text-[11px] font-semibold text-gray-600 dark:text-gray-300">
-                    Add Photo
+                    <div className="w-10 h-10 rounded-xl bg-[#193a32] flex items-center justify-center mb-2">
+                      <Upload className="w-5 h-5 text-[#45b89b]" />
+                    </div>
+
+                    <span className="text-[11px] font-semibold text-[#aebbb5]">
+                      Add Photo
+                    </span>
+
+                    <input
+                      type="file"
+                      accept="image/*"
+                      multiple
+                      onChange={handleImageUpload}
+                      className="hidden"
+                    />
+
+                  </label>
+                )}
+
+              </div>
+
+              <p className="text-[11px] text-[#687871]">
+                Maximum 5 images · Maximum 5MB per image.
+              </p>
+
+            </div>
+
+            {/* TITLE + CATEGORY */}
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+
+              <Input
+                label="Item Title"
+                name="title"
+                placeholder="e.g. Engineering Mathematics HK Dass"
+                value={formData.title}
+                onChange={handleInputChange}
+                error={errors.title}
+                required
+              />
+
+              <div className="flex flex-col space-y-1.5">
+
+                <label className="text-xs font-semibold uppercase tracking-wider text-[#c5d0cb]">
+                  Category{" "}
+                  <span className="text-rose-500">*</span>
+                </label>
+
+                <select
+                  name="category"
+                  value={formData.category}
+                  onChange={handleInputChange}
+                  className="w-full py-2.5 px-4 rounded-xl border border-[#35463f] bg-[#17211e] text-[#eef3f0] text-sm focus:outline-none focus:ring-2 focus:ring-[#3aaa91] focus:border-[#3aaa91] transition-all"
+                >
+                  {CATEGORIES
+                    .filter((c) => c.id !== "all")
+                    .map((cat) => (
+                      <option
+                        key={cat.id}
+                        value={cat.id}
+                        className="bg-[#17211e] text-[#eef3f0]"
+                      >
+                        {cat.label}
+                      </option>
+                    ))}
+                </select>
+
+              </div>
+
+            </div>
+
+            {/* PRICING */}
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+
+              <Input
+                label="Selling Price (₹)"
+                name="price"
+                type="number"
+                placeholder="e.g. 450"
+                icon={IndianRupee}
+                value={formData.price}
+                onChange={handleInputChange}
+                error={errors.price}
+                required
+              />
+
+              <Input
+                label="Original MRP Price (Optional ₹)"
+                name="originalPrice"
+                type="number"
+                placeholder="e.g. 1200"
+                value={formData.originalPrice}
+                onChange={handleInputChange}
+              />
+
+            </div>
+
+            {/* CONDITION + HOSTEL */}
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+
+              <div className="flex flex-col space-y-1.5">
+
+                <label className="text-xs font-semibold uppercase tracking-wider text-[#c5d0cb]">
+                  Condition{" "}
+                  <span className="text-rose-500">*</span>
+                </label>
+
+                <select
+                  name="condition"
+                  value={formData.condition}
+                  onChange={handleInputChange}
+                  className="w-full py-2.5 px-4 rounded-xl border border-[#35463f] bg-[#17211e] text-[#eef3f0] text-sm focus:outline-none focus:ring-2 focus:ring-[#3aaa91] focus:border-[#3aaa91] transition-all"
+                >
+                  {CONDITIONS.map((cond) => (
+                    <option
+                      key={cond}
+                      value={cond}
+                      className="bg-[#17211e] text-[#eef3f0]"
+                    >
+                      {cond}
+                    </option>
+                  ))}
+                </select>
+
+              </div>
+
+              <div className="flex flex-col space-y-1.5">
+
+                <label className="text-xs font-semibold uppercase tracking-wider text-[#c5d0cb]">
+                  Hostel / Location{" "}
+                  <span className="text-rose-500">*</span>
+                </label>
+
+                <select
+                  name="hostel"
+                  value={formData.hostel}
+                  onChange={handleInputChange}
+                  className="w-full py-2.5 px-4 rounded-xl border border-[#35463f] bg-[#17211e] text-[#eef3f0] text-sm focus:outline-none focus:ring-2 focus:ring-[#3aaa91] focus:border-[#3aaa91] transition-all"
+                >
+                  {HOSTELS
+                    .filter((h) => h !== "All Hostels")
+                    .map((hostel) => (
+                      <option
+                        key={hostel}
+                        value={hostel}
+                        className="bg-[#17211e] text-[#eef3f0]"
+                      >
+                        {hostel}
+                      </option>
+                    ))}
+                </select>
+
+              </div>
+
+            </div>
+
+            {/* DESCRIPTION */}
+
+            <div className="flex flex-col space-y-1.5">
+
+              <label className="text-xs font-semibold uppercase tracking-wider text-[#c5d0cb]">
+                Detailed Description{" "}
+                <span className="text-rose-500">*</span>
+              </label>
+
+              <textarea
+                name="description"
+                rows="5"
+                placeholder="Describe the condition, usage period, accessories, reason for selling..."
+                value={formData.description}
+                onChange={handleInputChange}
+                className="w-full p-4 rounded-xl border border-[#35463f] bg-[#17211e] text-[#eef3f0] placeholder:text-[#63736c] text-sm focus:outline-none focus:ring-2 focus:ring-[#3aaa91] focus:border-[#3aaa91] transition-all resize-none"
+              />
+
+              {errors.description && (
+                <span className="text-xs text-rose-500 font-medium">
+                  {errors.description}
+                </span>
+              )}
+
+            </div>
+
+            {/* CONTACT */}
+
+            <Input
+              label="Contact Phone / WhatsApp Number"
+              name="contactNumber"
+              placeholder="+91 98765 43210"
+              value={formData.contactNumber}
+              onChange={handleInputChange}
+              required
+            />
+
+            {/* SUBMIT */}
+
+            <div className="pt-5 border-t border-[#26352f]">
+
+              <Button
+                type="submit"
+                variant="primary"
+                size="lg"
+                fullWidth
+                icon={PlusCircle}
+                disabled={isSubmitting}
+                className="py-3.5 text-base font-extrabold bg-[#2f9f87] hover:bg-[#278b76] shadow-lg shadow-[#2f9f87]/20"
+              >
+                {isSubmitting
+                  ? "Uploading & Posting..."
+                  : "Post Item on BitMart"}
+              </Button>
+
+            </div>
+
+          </form>
+
+          {/* LIVE PREVIEW */}
+
+          <div className="lg:col-span-4 space-y-4">
+
+            <div className="bg-[#121b18] rounded-3xl border border-[#26352f] p-6 space-y-5 shadow-xl lg:sticky lg:top-24">
+
+              <div className="flex items-center justify-between border-b border-[#26352f] pb-4">
+
+                <div>
+                  <span className="text-xs font-extrabold uppercase tracking-wider text-[#aab7b1]">
+                    Live Listing Preview
                   </span>
 
-                  <input
-                    type="file"
-                    accept="image/*"
-                    multiple
-                    onChange={handleImageUpload}
-                    className="hidden"
-                  />
-                </label>
-              )}
+                  <p className="text-[11px] text-[#687871] mt-1">
+                    Preview of your marketplace card
+                  </p>
+                </div>
+
+                <span className="bg-[#193a32] border border-[#285c4e] text-[#48b99c] text-[10px] font-bold px-2.5 py-1 rounded-full">
+                  LIVE
+                </span>
+
+              </div>
+
+              <div className="rounded-2xl overflow-hidden">
+                <ProductCard product={livePreviewProduct} />
+              </div>
+
+              <p className="text-xs text-[#71817a] text-center leading-relaxed">
+                This is how your item will appear to students
+                on the BitMart marketplace.
+              </p>
+
             </div>
 
-            <p className="text-[11px] text-gray-400">
-              Upload up to 5 images. Maximum 5MB per image.
-            </p>
           </div>
 
-          {/* =====================================
-              TITLE + CATEGORY
-          ====================================== */}
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-            <Input
-              label="Item Title"
-              name="title"
-              placeholder="e.g. Engineering Mathematics HK Dass"
-              value={formData.title}
-              onChange={handleInputChange}
-              error={errors.title}
-              required
-            />
-
-            <div className="flex flex-col space-y-1.5">
-              <label className="text-xs font-semibold uppercase tracking-wider text-gray-700 dark:text-gray-300">
-                Category
-                <span className="text-rose-500">*</span>
-              </label>
-
-              <select
-                name="category"
-                value={formData.category}
-                onChange={handleInputChange}
-                className="w-full py-2.5 px-4 rounded-xl border border-gray-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-gray-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-              >
-                {CATEGORIES.filter((c) => c.id !== "all").map((cat) => (
-                  <option key={cat.id} value={cat.id}>
-                    {cat.label}
-                  </option>
-                ))}
-              </select>
-            </div>
-          </div>
-
-          {/* =====================================
-              PRICING
-          ====================================== */}
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-            <Input
-              label="Selling Price (₹)"
-              name="price"
-              type="number"
-              placeholder="e.g. 450"
-              icon={IndianRupee}
-              value={formData.price}
-              onChange={handleInputChange}
-              error={errors.price}
-              required
-            />
-
-            <Input
-              label="Original MRP Price (Optional ₹)"
-              name="originalPrice"
-              type="number"
-              placeholder="e.g. 1200"
-              value={formData.originalPrice}
-              onChange={handleInputChange}
-            />
-          </div>
-
-          {/* =====================================
-              CONDITION + HOSTEL
-          ====================================== */}
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-            <div className="flex flex-col space-y-1.5">
-              <label className="text-xs font-semibold uppercase tracking-wider text-gray-700 dark:text-gray-300">
-                Condition
-                <span className="text-rose-500">*</span>
-              </label>
-
-              <select
-                name="condition"
-                value={formData.condition}
-                onChange={handleInputChange}
-                className="w-full py-2.5 px-4 rounded-xl border border-gray-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-gray-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-              >
-                {CONDITIONS.map((cond) => (
-                  <option key={cond} value={cond}>
-                    {cond}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <div className="flex flex-col space-y-1.5">
-              <label className="text-xs font-semibold uppercase tracking-wider text-gray-700 dark:text-gray-300">
-                Hostel / Location
-                <span className="text-rose-500">*</span>
-              </label>
-
-              <select
-                name="hostel"
-                value={formData.hostel}
-                onChange={handleInputChange}
-                className="w-full py-2.5 px-4 rounded-xl border border-gray-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-gray-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-              >
-                {HOSTELS.filter((h) => h !== "All Hostels").map((hostel) => (
-                  <option key={hostel} value={hostel}>
-                    {hostel}
-                  </option>
-                ))}
-              </select>
-            </div>
-          </div>
-
-          {/* =====================================
-              DESCRIPTION
-          ====================================== */}
-
-          <div className="flex flex-col space-y-1.5">
-            <label className="text-xs font-semibold uppercase tracking-wider text-gray-700 dark:text-gray-300">
-              Detailed Description
-              <span className="text-rose-500">*</span>
-            </label>
-
-            <textarea
-              name="description"
-              rows="4"
-              placeholder="Describe the condition, usage period, accessories, reason for selling..."
-              value={formData.description}
-              onChange={handleInputChange}
-              className="w-full p-4 rounded-xl border border-gray-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-gray-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-
-            {errors.description && (
-              <span className="text-xs text-rose-500 font-medium">
-                {errors.description}
-              </span>
-            )}
-          </div>
-
-          {/* =====================================
-              CONTACT
-          ====================================== */}
-
-          <Input
-            label="Contact Phone / WhatsApp Number"
-            name="contactNumber"
-            placeholder="+91 98765 43210"
-            value={formData.contactNumber}
-            onChange={handleInputChange}
-            required
-          />
-
-          {/* =====================================
-              SUBMIT
-          ====================================== */}
-
-          <div className="pt-4 border-t border-gray-100 dark:border-slate-800">
-            <Button
-              type="submit"
-              variant="primary"
-              size="lg"
-              fullWidth
-              icon={PlusCircle}
-              disabled={isSubmitting}
-              className="py-3.5 text-base font-extrabold"
-            >
-              {isSubmitting ? "Uploading & Posting..." : "Post Item on BitMart"}
-            </Button>
-          </div>
-        </form>
-
-        {/* =====================================
-            LIVE PREVIEW
-        ====================================== */}
-
-        <div className="lg:col-span-4 space-y-4">
-          <div className="bg-white dark:bg-slate-900 rounded-3xl border border-gray-200/80 dark:border-slate-800 p-6 space-y-4 shadow-sm sticky top-24">
-            <div className="flex items-center justify-between border-b border-gray-100 dark:border-slate-800 pb-3">
-              <span className="text-xs font-extrabold uppercase tracking-wider text-gray-500 dark:text-gray-400">
-                Live Listing Card Preview
-              </span>
-
-              <span className="bg-blue-100 text-blue-700 dark:bg-blue-950 dark:text-blue-300 text-[10px] font-bold px-2 py-0.5 rounded-full">
-                Live
-              </span>
-            </div>
-
-            <ProductCard product={livePreviewProduct} />
-
-            <p className="text-xs text-gray-400 text-center">
-              This is how your item will appear to students on the homepage
-              feed.
-            </p>
-          </div>
         </div>
       </div>
     </div>

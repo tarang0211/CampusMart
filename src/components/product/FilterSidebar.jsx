@@ -1,11 +1,28 @@
 import React from 'react';
-import { SlidersHorizontal, RotateCcw, Building, Tag, ArrowUpDown, IndianRupee, Layers } from 'lucide-react';
-import { HOSTELS, CONDITIONS, CATEGORIES } from '../../data/dummyData';
+import {
+  SlidersHorizontal,
+  RotateCcw,
+  Building,
+  Tag,
+  ArrowUpDown,
+  IndianRupee,
+  Layers
+} from 'lucide-react';
+
+import {
+  HOSTELS,
+  CONDITIONS,
+  CATEGORIES
+} from '../../data/dummyData';
+
 import { useProducts } from '../../context/ProductContext';
 import { formatCurrency } from '../../utils/formatters';
 import { Button } from '../common/Button';
 
-export const FilterSidebar = ({ className = '', onCloseMobile }) => {
+export const FilterSidebar = ({
+  className = '',
+  onCloseMobile
+}) => {
   const {
     selectedCategory,
     setSelectedCategory,
@@ -21,142 +38,263 @@ export const FilterSidebar = ({ className = '', onCloseMobile }) => {
   } = useProducts();
 
   return (
-    <aside className={`bg-white dark:bg-slate-900 rounded-3xl border border-gray-200/80 dark:border-slate-800 p-6 space-y-6 shadow-sm ${className}`}>
-      {/* Header */}
-      <div className="flex items-center justify-between pb-4 border-b border-gray-100 dark:border-slate-800">
-        <div className="flex items-center gap-2 font-bold text-gray-900 dark:text-white text-base">
-          <SlidersHorizontal className="w-4 h-4 text-blue-600 dark:text-blue-400" />
-          <span>Filter & Sort</span>
+    <aside
+      className={`space-y-6 rounded-lg border border-[#e3e0d8] bg-white p-5 dark:border-[#303a35] dark:bg-[#18201d] ${className}`}
+    >
+
+      {/* =================================
+          HEADER
+      ================================= */}
+
+      <div className="flex items-center justify-between border-b border-[#ece9e2] pb-4 dark:border-[#2b3530]">
+
+        <div className="flex items-center gap-2 text-sm font-bold text-[#242421] dark:text-[#f3f4f1]">
+
+          <SlidersHorizontal className="h-4 w-4 text-[#176b5b] dark:text-[#3faf91]" />
+
+          <span>Filters</span>
+
         </div>
+
         <button
+          type="button"
           onClick={resetFilters}
-          className="text-xs font-semibold text-gray-500 hover:text-blue-600 dark:hover:text-blue-400 flex items-center gap-1 transition-colors"
+          className="flex items-center gap-1 text-xs font-semibold text-[#77746d] transition-colors hover:text-[#176b5b] dark:text-[#929b95] dark:hover:text-[#3faf91]"
         >
-          <RotateCcw className="w-3 h-3" />
-          Reset All
+          <RotateCcw className="h-3 w-3" />
+          Reset
         </button>
+
       </div>
 
-      {/* Sort By */}
+
+      {/* =================================
+          SORT
+      ================================= */}
+
       <div className="space-y-2">
-        <label className="text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300 flex items-center gap-1.5">
-          <ArrowUpDown className="w-3.5 h-3.5 text-blue-500" />
-          Sort Order
+
+        <label className="flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wide text-[#66635d] dark:text-[#a1aaa4]">
+
+          <ArrowUpDown className="h-3.5 w-3.5 text-[#176b5b] dark:text-[#3faf91]" />
+
+          Sort by
+
         </label>
+
         <select
           value={sortBy}
           onChange={(e) => setSortBy(e.target.value)}
-          className="w-full py-2.5 px-3 rounded-xl border border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-slate-800 text-gray-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="h-10 w-full rounded-md border border-[#dedbd3] bg-[#faf9f6] px-3 text-sm text-[#33322f] outline-none transition-colors focus:border-[#176b5b] focus:ring-1 focus:ring-[#176b5b]/20 dark:border-[#303a35] dark:bg-[#202a26] dark:text-gray-200 dark:focus:border-[#3faf91]"
         >
-          <option value="newest">Latest Campus Posts</option>
-          <option value="price-low">Price: Low to High</option>
-          <option value="price-high">Price: High to Low</option>
+          <option value="newest">
+            Latest Campus Posts
+          </option>
+
+          <option value="price-low">
+            Price: Low to High
+          </option>
+
+          <option value="price-high">
+            Price: High to Low
+          </option>
         </select>
+
       </div>
 
-      {/* Category Dropdown/Pills */}
+
+      {/* =================================
+          CATEGORY
+      ================================= */}
+
       <div className="space-y-2">
-        <label className="text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300 flex items-center gap-1.5">
-          <Layers className="w-3.5 h-3.5 text-blue-500" />
+
+        <label className="flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wide text-[#66635d] dark:text-[#a1aaa4]">
+
+          <Layers className="h-3.5 w-3.5 text-[#176b5b] dark:text-[#3faf91]" />
+
           Category
+
         </label>
+
         <select
           value={selectedCategory}
-          onChange={(e) => setSelectedCategory(e.target.value)}
-          className="w-full py-2.5 px-3 rounded-xl border border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-slate-800 text-gray-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+          onChange={(e) =>
+            setSelectedCategory(e.target.value)
+          }
+          className="h-10 w-full rounded-md border border-[#dedbd3] bg-[#faf9f6] px-3 text-sm text-[#33322f] outline-none transition-colors focus:border-[#176b5b] focus:ring-1 focus:ring-[#176b5b]/20 dark:border-[#303a35] dark:bg-[#202a26] dark:text-gray-200 dark:focus:border-[#3faf91]"
         >
-          {CATEGORIES.map(cat => (
-            <option key={cat.id} value={cat.id}>
-              {cat.label}
+          {CATEGORIES.map((category) => (
+            <option
+              key={category.id}
+              value={category.id}
+            >
+              {category.label}
             </option>
           ))}
         </select>
+
       </div>
 
-      {/* Hostel Filter */}
+
+      {/* =================================
+          HOSTEL
+      ================================= */}
+
       <div className="space-y-2">
-        <label className="text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300 flex items-center gap-1.5">
-          <Building className="w-3.5 h-3.5 text-blue-500" />
-          Hostel / Campus Zone
+
+        <label className="flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wide text-[#66635d] dark:text-[#a1aaa4]">
+
+          <Building className="h-3.5 w-3.5 text-[#176b5b] dark:text-[#3faf91]" />
+
+          Hostel / Zone
+
         </label>
+
         <select
           value={selectedHostel}
-          onChange={(e) => setSelectedHostel(e.target.value)}
-          className="w-full py-2.5 px-3 rounded-xl border border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-slate-800 text-gray-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+          onChange={(e) =>
+            setSelectedHostel(e.target.value)
+          }
+          className="h-10 w-full rounded-md border border-[#dedbd3] bg-[#faf9f6] px-3 text-sm text-[#33322f] outline-none transition-colors focus:border-[#176b5b] focus:ring-1 focus:ring-[#176b5b]/20 dark:border-[#303a35] dark:bg-[#202a26] dark:text-gray-200 dark:focus:border-[#3faf91]"
         >
-          {HOSTELS.map(hostel => (
-            <option key={hostel} value={hostel}>
+          {HOSTELS.map((hostel) => (
+            <option
+              key={hostel}
+              value={hostel}
+            >
               {hostel}
             </option>
           ))}
         </select>
+
       </div>
 
-      {/* Max Price Range Slider */}
+
+      {/* =================================
+          PRICE
+      ================================= */}
+
       <div className="space-y-3">
+
         <div className="flex items-center justify-between">
-          <label className="text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300 flex items-center gap-1.5">
-            <IndianRupee className="w-3.5 h-3.5 text-blue-500" />
-            Max Price
+
+          <label className="flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wide text-[#66635d] dark:text-[#a1aaa4]">
+
+            <IndianRupee className="h-3.5 w-3.5 text-[#176b5b] dark:text-[#3faf91]" />
+
+            Max price
+
           </label>
-          <span className="text-sm font-extrabold text-blue-600 dark:text-blue-400">
+
+          <span className="text-sm font-bold text-[#176b5b] dark:text-[#3faf91]">
             {formatCurrency(priceRange)}
           </span>
+
         </div>
+
         <input
           type="range"
           min="100"
           max="10000"
           step="100"
           value={priceRange}
-          onChange={(e) => setPriceRange(Number(e.target.value))}
-          className="w-full h-2 bg-gray-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-blue-600"
+          onChange={(e) =>
+            setPriceRange(Number(e.target.value))
+          }
+          className="h-1.5 w-full cursor-pointer appearance-none rounded-full bg-[#ddd9d0] accent-[#176b5b] dark:bg-[#35403a] dark:accent-[#3faf91]"
         />
-        <div className="flex justify-between text-[11px] text-gray-400 font-medium">
+
+        <div className="flex justify-between text-[10px] font-medium text-[#99968f]">
           <span>₹100</span>
           <span>₹10,000+</span>
         </div>
+
       </div>
 
-      {/* Item Condition Filter */}
-      <div className="space-y-2.5">
-        <label className="text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300 flex items-center gap-1.5">
-          <Tag className="w-3.5 h-3.5 text-blue-500" />
-          Item Condition
+
+      {/* =================================
+          CONDITION
+      ================================= */}
+
+      <div className="space-y-3">
+
+        <label className="flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wide text-[#66635d] dark:text-[#a1aaa4]">
+
+          <Tag className="h-3.5 w-3.5 text-[#176b5b] dark:text-[#3faf91]" />
+
+          Condition
+
         </label>
-        <div className="space-y-1.5">
-          <label className="flex items-center gap-2.5 text-sm text-gray-700 dark:text-gray-300 cursor-pointer">
+
+        <div className="space-y-2">
+
+          <label className="flex cursor-pointer items-center gap-2.5 text-sm text-[#55534e] dark:text-gray-300">
+
             <input
               type="radio"
               name="condition"
               checked={selectedCondition === 'all'}
-              onChange={() => setSelectedCondition('all')}
-              className="w-4 h-4 text-blue-600 accent-blue-600"
+              onChange={() =>
+                setSelectedCondition('all')
+              }
+              className="h-4 w-4 accent-[#176b5b] dark:accent-[#3faf91]"
             />
-            <span>All Conditions</span>
+
+            <span>All conditions</span>
+
           </label>
-          {CONDITIONS.map(cond => (
-            <label key={cond} className="flex items-center gap-2.5 text-sm text-gray-700 dark:text-gray-300 cursor-pointer">
+
+          {CONDITIONS.map((condition) => (
+
+            <label
+              key={condition}
+              className="flex cursor-pointer items-center gap-2.5 text-sm text-[#55534e] dark:text-gray-300"
+            >
+
               <input
                 type="radio"
                 name="condition"
-                checked={selectedCondition === cond}
-                onChange={() => setSelectedCondition(cond)}
-                className="w-4 h-4 text-blue-600 accent-blue-600"
+                checked={
+                  selectedCondition === condition
+                }
+                onChange={() =>
+                  setSelectedCondition(condition)
+                }
+                className="h-4 w-4 accent-[#176b5b] dark:accent-[#3faf91]"
               />
-              <span>{cond}</span>
+
+              <span>{condition}</span>
+
             </label>
+
           ))}
+
         </div>
+
       </div>
 
+
+      {/* =================================
+          MOBILE APPLY
+      ================================= */}
+
       {onCloseMobile && (
-        <div className="pt-4 border-t border-gray-100 dark:border-slate-800">
-          <Button variant="primary" fullWidth onClick={onCloseMobile}>
+
+        <div className="border-t border-[#ece9e2] pt-4 dark:border-[#2b3530]">
+
+          <Button
+            variant="primary"
+            fullWidth
+            onClick={onCloseMobile}
+          >
             Apply Filters
           </Button>
+
         </div>
+
       )}
+
     </aside>
   );
 };

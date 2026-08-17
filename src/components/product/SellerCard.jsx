@@ -4,9 +4,7 @@ import {
   Star,
   MessageSquare,
   Phone,
-  MapPin,
   Building,
-  Award,
 } from "lucide-react";
 import { Button } from "../common/Button";
 
@@ -26,20 +24,23 @@ export const SellerCard = ({ seller, productTitle, onContactClick }) => {
   const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${whatsappMessage}`;
 
   return (
-    <div className="bg-white dark:bg-slate-900 rounded-3xl border border-gray-200/80 dark:border-slate-800 p-6 space-y-5 shadow-sm">
-      <div className="flex items-center justify-between pb-4 border-b border-gray-100 dark:border-slate-800">
-        <h3 className="text-xs font-extrabold uppercase tracking-wider text-gray-500 dark:text-gray-400">
+    <div className="bg-white dark:bg-[#111b18] rounded-2xl border border-[#dfdcd4] dark:border-[#2a342f] p-6 space-y-5 shadow-sm transition-colors">
+
+      {/* Header */}
+      <div className="flex items-center justify-between pb-4 border-b border-[#ebe8e1] dark:border-[#2a342f]">
+        <h3 className="text-xs font-extrabold uppercase tracking-wider text-[#77746d] dark:text-[#8f9993]">
           Seller Information
         </h3>
+
         {seller.verifiedStudent && (
-          <div className="flex items-center gap-1 text-[11px] font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/60 px-2.5 py-0.5 rounded-full border border-emerald-200 dark:border-emerald-800">
+          <div className="flex items-center gap-1 text-[11px] font-bold text-[#176b5b] dark:text-[#3faf91] bg-[#edf6f2] dark:bg-[#182923] px-2.5 py-1 rounded-full border border-[#cfe2db] dark:border-[#315248]">
             <ShieldCheck className="w-3.5 h-3.5" />
             <span>Verified Student</span>
           </div>
         )}
       </div>
 
-      {/* Seller Header */}
+      {/* Seller */}
       <div className="flex items-center gap-4">
         <img
           src={
@@ -47,45 +48,56 @@ export const SellerCard = ({ seller, productTitle, onContactClick }) => {
             "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&q=80&w=200"
           }
           alt={seller.name}
-          className="w-14 h-14 rounded-2xl object-cover border-2 border-blue-500 shadow-sm"
+          className="w-14 h-14 rounded-xl object-cover border-2 border-[#176b5b] dark:border-[#3faf91] shadow-sm"
         />
+
         <div className="space-y-1">
-          <h4 className="font-bold text-gray-900 dark:text-white text-base">
+          <h4 className="font-bold text-[#171717] dark:text-[#f3f4f1] text-base">
             {seller.name}
           </h4>
-          <p className="text-xs text-gray-500 dark:text-gray-400 font-medium">
+
+          <p className="text-xs text-[#77746d] dark:text-[#8f9993] font-medium">
             {seller.department || "B.Tech Student"}
           </p>
-          <div className="flex items-center gap-3 text-xs text-gray-600 dark:text-gray-300">
+
+          <div className="flex items-center gap-3 text-xs">
             <span className="flex items-center gap-1 text-amber-500 font-bold">
               <Star className="w-3.5 h-3.5 fill-amber-500" />
-              <span>{seller.rating || 4.9}</span>
+              {seller.rating || 4.9}
             </span>
-            <span className="text-gray-300 dark:text-slate-700">•</span>
-            <span className="font-medium text-gray-500">
+
+            <span className="text-[#d0cdc5] dark:text-[#3a4641]">
+              •
+            </span>
+
+            <span className="font-medium text-[#77746d] dark:text-[#8f9993]">
               {seller.soldCount || 2} Items Sold
             </span>
           </div>
         </div>
       </div>
 
-      {/* Hostel Location Details */}
-      <div className="p-3.5 rounded-2xl bg-gray-50 dark:bg-slate-800/60 space-y-2 text-xs text-gray-600 dark:text-gray-300 border border-gray-100 dark:border-slate-800">
+      {/* Location */}
+      <div className="p-4 rounded-xl bg-[#f7f6f2] dark:bg-[#18201d] space-y-2 text-xs text-[#5f5c56] dark:text-[#b5bcb8] border border-[#ebe8e1] dark:border-[#2a342f]">
         <div className="flex items-center gap-2">
-          <Building className="w-4 h-4 text-blue-500 shrink-0" />
-          <span className="font-semibold text-gray-900 dark:text-white">
-            {seller.hostel}
+          <Building className="w-4 h-4 text-[#176b5b] dark:text-[#3faf91] shrink-0" />
+
+          <span className="font-semibold text-[#171717] dark:text-[#f3f4f1]">
+            {seller.hostel || "Campus"}
           </span>
         </div>
+
         {seller.room && (
-          <div className="flex items-center gap-2 pl-6 text-gray-500">
-            <span>Pickup: {seller.room}</span>
+          <div className="pl-6 text-[#77746d] dark:text-[#8f9993]">
+            Pickup: {seller.room}
           </div>
         )}
       </div>
 
-      {/* Action Buttons */}
+      {/* Actions */}
       <div className="space-y-2.5 pt-1">
+
+        {/* WhatsApp */}
         <a
           href={whatsappUrl}
           target="_blank"
@@ -96,21 +108,23 @@ export const SellerCard = ({ seller, productTitle, onContactClick }) => {
             variant="success"
             fullWidth
             icon={MessageSquare}
-            className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3"
+            className="!bg-[#176b5b] !border-[#176b5b] hover:!bg-[#125448] hover:!border-[#125448] dark:!bg-[#2f8c76] dark:!border-[#2f8c76] dark:hover:!bg-[#26735f] dark:hover:!border-[#26735f] !text-white font-bold py-3"
           >
             Chat on WhatsApp
           </Button>
         </a>
 
+        {/* Contact */}
         <Button
           variant="outline"
           fullWidth
           icon={Phone}
           onClick={onContactClick}
-          className="border-gray-300 dark:border-slate-700 py-2.5"
+          className="!border-[#d6d3cb] dark:!border-[#35403a] !text-[#5f5c56] dark:!text-[#d0d6d3] hover:!border-[#176b5b] hover:!text-[#176b5b] dark:hover:!border-[#3faf91] dark:hover:!text-[#3faf91] py-2.5"
         >
           View Contact Number
         </Button>
+
       </div>
     </div>
   );
