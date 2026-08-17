@@ -6,21 +6,17 @@ import {
   Heart,
   Package,
   User,
-  Sun,
-  Moon,
   Menu,
   X,
   LogOut,
 } from 'lucide-react';
 
-import { useTheme } from '../../context/ThemeContext';
 import { useAuth } from '../../context/AuthContext';
 import { useWishlist } from '../../context/WishlistContext';
 import { useProducts } from '../../context/ProductContext';
 import { Button } from '../common/Button';
 
 export const Navbar = () => {
-  const { darkMode, toggleDarkMode } = useTheme();
   const { user, isLoggedIn, logout } = useAuth();
   const { wishlist } = useWishlist();
   const { products, searchQuery, setSearchQuery } = useProducts();
@@ -167,20 +163,6 @@ export const Navbar = () => {
 
           {/* Right Controls */}
           <div className="flex shrink-0 items-center gap-1">
-
-            {/* Theme Toggle */}
-            <button
-              onClick={toggleDarkMode}
-              className="flex h-9 w-9 items-center justify-center rounded-lg text-[#5f5c56] transition-colors hover:bg-[#ece9e1] hover:text-[#176b5b] dark:text-[#b5bcb8] dark:hover:bg-[#18201d] dark:hover:text-[#3faf91]"
-              title={darkMode ? 'Switch to light mode' : 'Switch to dark mode'}
-              aria-label={darkMode ? 'Switch to light mode' : 'Switch to dark mode'}
-            >
-              {darkMode ? (
-                <Sun className="h-4.5 w-4.5 text-amber-400" />
-              ) : (
-                <Moon className="h-4.5 w-4.5 text-[#176b5b] dark:text-[#3faf91]" />
-              )}
-            </button>
 
             {/* Profile / Auth */}
             {isLoggedIn ? (
